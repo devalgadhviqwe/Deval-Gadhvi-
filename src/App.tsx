@@ -4,6 +4,7 @@ import { ClinicProvider } from './context/ClinicContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
+import { MouseGlow } from './components/common/MouseGlow';
 
 // Public Pages
 import { HomePage } from './pages/HomePage';
@@ -60,7 +61,8 @@ const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children
 // Public Layout Wrapper
 const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen relative overflow-x-hidden">
+      <MouseGlow />
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />

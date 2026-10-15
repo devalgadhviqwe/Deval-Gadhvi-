@@ -31,7 +31,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar for admin panels */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -46,3 +46,45 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Interactive Card Hover Animations */
+.hover-card-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  will-change: transform, box-shadow;
+}
+
+.hover-card-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px -10px rgba(67, 128, 255, 0.14), 0 8px 16px -4px rgba(15, 23, 42, 0.04);
+  border-color: rgba(67, 128, 255, 0.35);
+}
+
+/* Button Hover Micro-animation */
+.hover-btn-pop {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.hover-btn-pop:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(67, 128, 255, 0.3);
+}
+
+.hover-btn-pop:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Mouse Ambient Spotlight Effect */
+.mouse-ambient-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(67, 128, 255, 0.08) 0%, rgba(67, 128, 255, 0.02) 45%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease, transform 0.08s ease-out;
+  z-index: 9999;
+}
+

@@ -46,28 +46,35 @@ export const Header: React.FC = () => {
             )}
           </Link>
 
-          {/* Centered Navigation: Home | About | Services | Providers */}
+          {/* Centered Navigation: Home | About | Services | Providers with animated hover underline */}
           <nav className="hidden md:flex items-center gap-8 lg:gap-10">
             {navLinks.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-[15px] font-medium transition-colors ${
+                className={`relative text-[15px] font-medium transition-colors py-1 group ${
                   isActive(item.path)
                     ? 'text-[#4380FF]'
                     : 'text-[#111111] hover:text-[#4380FF]'
                 }`}
               >
-                {item.label}
+                <span>{item.label}</span>
+                <span
+                  className={`absolute bottom-0 left-0 h-[2px] bg-[#4380FF] rounded-full transition-all duration-300 ${
+                    isActive(item.path)
+                      ? 'w-full'
+                      : 'w-0 group-hover:w-full'
+                  }`}
+                />
               </Link>
             ))}
           </nav>
 
-          {/* Right Button: Blue rounded pill button "Contact Us" */}
+          {/* Right Button: Blue rounded pill button "Contact Us" with hover micro-animation */}
           <div className="hidden md:flex items-center shrink-0">
             <Link
               to={settings?.primaryCtaUrl || '/contact'}
-              className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-full transition-colors"
+              className="hover-btn-pop inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-full transition-all shadow-xs"
             >
               {settings?.primaryCtaLabel || 'Contact Us'}
             </Link>

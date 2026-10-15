@@ -76,14 +76,17 @@ export const ServicesPage: React.FC = () => {
             return (
               <div
                 key={service.id}
-                className="bg-white rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between group"
+                className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover-card-lift flex flex-col justify-between group relative"
               >
+                {/* Top subtle highlight gradient bar on hover */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] via-blue-500 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                 <div>
                   <div className="p-6">
-                    <div className="w-12 h-12 rounded-xl bg-blue-900/10 text-blue-900 flex items-center justify-center mb-5 group-hover:bg-blue-900 group-hover:text-white transition-colors">
+                    <div className="w-12 h-12 rounded-xl bg-blue-900/10 text-blue-900 flex items-center justify-center mb-5 group-hover:bg-[#4380FF] group-hover:text-white group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-md group-hover:shadow-blue-500/25 transition-all duration-300">
                       <Icon className="w-6 h-6" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-900 transition-colors">
+                    <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#4380FF] transition-colors duration-200">
                       {service.name}
                     </h3>
                     <p className="text-sm text-slate-600 leading-relaxed mb-6">
@@ -93,8 +96,8 @@ export const ServicesPage: React.FC = () => {
                     {service.features && service.features.length > 0 && (
                       <div className="space-y-1.5 border-t border-slate-100 pt-4 mb-4">
                         {service.features.slice(0, 3).map((feat, idx) => (
-                          <div key={idx} className="flex items-center gap-2 text-xs text-slate-600">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-blue-800 shrink-0" />
+                          <div key={idx} className="flex items-center gap-2 text-xs text-slate-600 group-hover:translate-x-0.5 transition-transform duration-200">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-blue-800 shrink-0 group-hover:text-[#4380FF] transition-colors" />
                             <span className="truncate">{feat}</span>
                           </div>
                         ))}
@@ -106,9 +109,10 @@ export const ServicesPage: React.FC = () => {
                 <div className="p-6 pt-0">
                   <Link
                     to={`/services/${service.slug}`}
-                    className="w-full text-center block py-2.5 px-4 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg transition-colors"
+                    className="w-full text-center flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-bold text-white bg-blue-900 group-hover:bg-[#4380FF] rounded-lg transition-all duration-300 shadow-2xs group-hover:shadow-md group-hover:shadow-blue-500/20"
                   >
-                    View Service Details &rarr;
+                    <span>View Service Details</span>
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                   </Link>
                 </div>
               </div>
@@ -132,10 +136,13 @@ export const ServicesPage: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {diagnostics.map((diag) => (
-              <div key={diag.id} className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                <div className="font-bold text-sm text-slate-900">{diag.name}</div>
+              <div
+                key={diag.id}
+                className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-md hover:bg-white transition-all duration-200 group cursor-default"
+              >
+                <div className="font-bold text-sm text-slate-900 group-hover:text-[#4380FF] transition-colors">{diag.name}</div>
                 <p className="text-xs text-slate-500 mt-1 line-clamp-2">{diag.shortDesc}</p>
-                <div className="text-[11px] text-blue-900 font-semibold mt-2">
+                <div className="text-[11px] text-blue-900 font-semibold mt-2 group-hover:translate-x-0.5 transition-transform">
                   {diag.turnaroundTime}
                 </div>
               </div>

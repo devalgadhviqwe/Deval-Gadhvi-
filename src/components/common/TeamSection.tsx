@@ -146,11 +146,11 @@ export const TeamSection: React.FC = () => {
                     </svg>
                   </div>
                 ) : (
-                  /* Doctor Portrait with automatic fallback error handling */
+                  /* Doctor Portrait with smooth zoom on hover */
                   <img
                     src={member.imageUrl}
                     alt={member.name}
-                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
                     loading="lazy"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
@@ -161,13 +161,13 @@ export const TeamSection: React.FC = () => {
                   />
                 )}
 
-                {/* Profile Link Arrow Button: Floating rounded circular button */}
+                {/* Profile Link Arrow Button: Floating rounded circular button with active hover */}
                 <Link
                   to={`/providers/${member.slug}`}
                   aria-label={`View full profile of ${member.name}`}
-                  className="absolute bottom-4 right-4 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-white text-[#111111] hover:text-[#4380FF] shadow-xs flex items-center justify-center transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  className="absolute bottom-4 right-4 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-[#4380FF] text-[#111111] hover:text-white shadow-md flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-blue-500/30"
                 >
-                  <ArrowUpRight className="w-5 h-5 stroke-[2.2]" />
+                  <ArrowUpRight className="w-5 h-5 stroke-[2.2] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
               </div>
 
@@ -193,7 +193,7 @@ export const TeamSection: React.FC = () => {
                   </div>
                   <a
                     href={`tel:${member.phone.replace(/[^0-9]/g, '')}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-full transition-colors shrink-0 shadow-2xs"
+                    className="hover-btn-pop inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-full transition-all shrink-0 shadow-xs"
                   >
                     <Phone className="w-3 h-3" />
                     <span>Call to Book</span>

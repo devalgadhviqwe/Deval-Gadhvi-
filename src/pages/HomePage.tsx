@@ -82,17 +82,17 @@ export const HomePage: React.FC = () => {
                   'At Newark Medical Associates provides compassionate, high-quality care focused on prevention, early detection, and patient comfort in a professional, nonjudgmental environment.'}
               </p>
 
-              {/* Action Buttons: Pill-shaped, compact, no icons */}
+              {/* Action Buttons: Pill-shaped, compact, with hover pop micro-animations */}
               <div className="mt-8 flex items-center gap-4">
                 <Link
                   to={heroSection?.primaryButtonUrl || '/contact'}
-                  className="inline-flex items-center justify-center px-7 py-3 text-[15px] font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full transition-colors"
+                  className="hover-btn-pop inline-flex items-center justify-center px-7 py-3 text-[15px] font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full transition-colors shadow-xs"
                 >
                   {heroSection?.primaryButtonLabel || 'Contact Us'}
                 </Link>
                 <Link
                   to={heroSection?.secondaryButtonUrl || '/providers'}
-                  className="inline-flex items-center justify-center px-7 py-3 text-[15px] font-medium text-[#4380FF] bg-white hover:bg-blue-50/40 border border-[#4380FF] rounded-full transition-colors"
+                  className="hover-btn-pop inline-flex items-center justify-center px-7 py-3 text-[15px] font-medium text-[#4380FF] bg-white hover:bg-blue-50/40 border border-[#4380FF] rounded-full transition-colors shadow-xs"
                 >
                   {heroSection?.secondaryButtonLabel || 'Our Providers'}
                 </Link>
@@ -166,7 +166,7 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* 8 Service Cards Grid with scroll pop-up */}
+          {/* 8 Service Cards Grid with hover lift and micro-animations */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service, idx) => {
               const Icon = getIconComponent(service.iconName);
@@ -176,13 +176,16 @@ export const HomePage: React.FC = () => {
                   delay={(idx % 4) * 0.07}
                   initialScale={0.92}
                   yOffset={24}
-                  className="group bg-slate-50 hover:bg-white rounded-xl p-6 border border-slate-200/90 hover:border-blue-900/30 hover:shadow-md transition-all flex flex-col justify-between"
+                  className="group bg-slate-50 hover:bg-white rounded-2xl p-6 border border-slate-200/90 hover:border-[#4380FF]/40 hover-card-lift transition-all flex flex-col justify-between relative overflow-hidden"
                 >
+                  {/* Accent hover indicator line */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                   <div>
-                    <div className="w-12 h-12 rounded-lg bg-blue-900/10 text-blue-900 flex items-center justify-center mb-5 group-hover:bg-blue-900 group-hover:text-white transition-colors">
+                    <div className="w-12 h-12 rounded-xl bg-blue-900/10 text-blue-900 flex items-center justify-center mb-5 group-hover:bg-[#4380FF] group-hover:text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-2xs">
                       <Icon className="w-6 h-6" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-900 transition-colors">
+                    <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-[#4380FF] transition-colors duration-200">
                       {service.name}
                     </h3>
                     <p className="text-sm text-slate-600 leading-relaxed mb-6">
@@ -192,10 +195,10 @@ export const HomePage: React.FC = () => {
                   <div>
                     <Link
                       to={`/services/${service.slug}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-900 group-hover:text-blue-800 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#4380FF] group-hover:text-blue-700 transition-colors"
                     >
                       <span>View Services</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1.5" />
                     </Link>
                   </div>
                 </ScrollPop>
@@ -238,7 +241,7 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* 8 Diagnostic Cards Grid with scroll pop-up */}
+          {/* 8 Diagnostic Cards Grid with scroll pop-up and hover lift */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {diagnostics.map((diag, idx) => {
               const Icon = getIconComponent(diag.iconName);
@@ -248,20 +251,20 @@ export const HomePage: React.FC = () => {
                   delay={(idx % 4) * 0.07}
                   initialScale={0.92}
                   yOffset={24}
-                  className="bg-slate-50 rounded-xl p-5 border border-slate-200/90 hover:border-slate-300 transition-colors flex flex-col justify-between"
+                  className="group bg-slate-50 hover:bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-[#4380FF]/40 hover-card-lift transition-all flex flex-col justify-between"
                 >
                   <div>
-                    <div className="w-10 h-10 rounded-lg bg-sky-100 text-sky-800 flex items-center justify-center mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center mb-4 group-hover:bg-[#4380FF] group-hover:text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <h3 className="text-base font-bold text-slate-900 mb-1.5">
+                    <h3 className="text-base font-bold text-slate-900 mb-1.5 group-hover:text-[#4380FF] transition-colors">
                       {diag.name}
                     </h3>
                     <p className="text-xs text-slate-600 leading-relaxed mb-4">
                       {diag.shortDesc}
                     </p>
                   </div>
-                  <div className="pt-3 border-t border-slate-200/80 text-[11px] font-medium text-slate-500">
+                  <div className="pt-3 border-t border-slate-200/80 text-[11px] font-medium text-slate-500 group-hover:text-slate-700 transition-colors">
                     <span className="text-slate-700 font-semibold">Turnaround:</span> {diag.turnaroundTime}
                   </div>
                 </ScrollPop>
