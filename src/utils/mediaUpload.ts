@@ -1,10 +1,15 @@
 import { MediaAsset } from '../types';
 import defaultClinicData from '../../data/clinic_data.json';
+import { setIdbItem, getIdbItem, removeIdbItem } from './idbStorage';
 
 const LOCAL_MEDIA_KEY = 'nma_uploaded_media_assets';
 
 // Converts a file to an optimized Base64 data URL using an offscreen canvas
-export async function optimizeImageToDataUrl(file: File, maxDim = 1600, quality = 0.88): Promise<{ dataUrl: string; width: number; height: number }> {
+export async function optimizeImageToDataUrl(
+  file: File,
+  maxDim = 1200,
+  quality = 0.82
+): Promise<{ dataUrl: string; width: number; height: number }> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Failed reading selected image file'));
@@ -35,8 +40,20 @@ export async function optimizeImageToDataUrl(file: File, maxDim = 1600, quality 
         }
 
         ctx.drawImage(img, 0, 0, width, height);
-        const mimeType = file.type === 'image/png' || file.type === 'image/svg+xml' ? 'image/png' : 'image/jpeg';
-        const dataUrl = canvas.toDataURL(mimeType, quality);
+
+        // Prefer webp for ultra-compact storage (~60KB–120KB) with high fidelity and transparency support.
+        // If webp isn't supported by the browser canvas, fall back to jpeg (or png for transparent logos).
+        let dataUrl: string;
+        try {
+          dataUrl = canvas.toDataURL('image/webp', quality);
+          if (!dataUrl.startsWith('data:image/webp')) {
+            const isTransparent = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png') || file.type === 'image/svg+xml';
+            dataUrl = canvas.toDataURL(isTransparent ? 'image/png' : 'image/jpeg', quality);
+          }
+        } catch {
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+
         resolve({ dataUrl, width, height });
       };
       img.src = e.target?.result as string;
@@ -45,7 +62,7 @@ export async function optimizeImageToDataUrl(file: File, maxDim = 1600, quality 
   });
 }
 
-// Stores custom media in local storage for persistence across visits in static deployments
+// Stores custom media in local storage and IndexedDB
 export function getLocalMediaAssets(): MediaAsset[] {
   try {
     const raw = localStorage.getItem(LOCAL_MEDIA_KEY);
@@ -55,25 +72,41 @@ export function getLocalMediaAssets(): MediaAsset[] {
   }
 }
 
-export function saveLocalMediaAsset(asset: MediaAsset): void {
+export async function saveLocalMediaAsset(asset: MediaAsset): Promise<void> {
+  // 1. Always persist to IndexedDB (virtually unlimited browser storage)
+  try {
+    const idbList: MediaAsset[] = (await getIdbItem<MediaAsset[]>(LOCAL_MEDIA_KEY)) || [];
+    const updatedIdb = [asset, ...idbList.filter((item) => item.id !== asset.id && item.url !== asset.url)];
+    await setIdbItem(LOCAL_MEDIA_KEY, updatedIdb.slice(0, 50));
+  } catch (err) {
+    console.warn('Could not save to IndexedDB:', err);
+  }
+
+  // 2. Also try localStorage (keep up to 10 most recent to prevent quota errors)
   try {
     const current = getLocalMediaAssets();
-    const updated = [asset, ...current.filter((item) => item.id !== asset.id)];
-    // Cap stored assets to avoid exceeding browser storage quotas
-    const capped = updated.slice(0, 30);
-    localStorage.setItem(LOCAL_MEDIA_KEY, JSON.stringify(capped));
-  } catch (err) {
-    console.warn('Could not persist media asset to localStorage:', err);
+    const updated = [asset, ...current.filter((item) => item.id !== asset.id && item.url !== asset.url)];
+    localStorage.setItem(LOCAL_MEDIA_KEY, JSON.stringify(updated.slice(0, 10)));
+  } catch {
+    // Gracefully handled if quota is reached
   }
 }
 
-export function removeLocalMediaAsset(id: string): void {
+export async function removeLocalMediaAsset(id: string): Promise<void> {
   try {
     const current = getLocalMediaAssets();
     const updated = current.filter((item) => item.id !== id);
     localStorage.setItem(LOCAL_MEDIA_KEY, JSON.stringify(updated));
-  } catch (err) {
-    console.warn('Could not remove media asset from localStorage:', err);
+  } catch {
+    // Ignore
+  }
+
+  try {
+    const idbList: MediaAsset[] = (await getIdbItem<MediaAsset[]>(LOCAL_MEDIA_KEY)) || [];
+    const updated = idbList.filter((item) => item.id !== id);
+    await setIdbItem(LOCAL_MEDIA_KEY, updated);
+  } catch {
+    // Ignore
   }
 }
 
@@ -83,7 +116,7 @@ export async function uploadImageUnified(
   category = 'general',
   authHeaders?: Record<string, string>
 ): Promise<MediaAsset> {
-  // 1. Try server endpoint first
+  // 1. Try server endpoint first if running on Express dev server
   try {
     const formData = new FormData();
     formData.append('file', file);
@@ -99,15 +132,15 @@ export async function uploadImageUnified(
     const contentType = res.headers.get('content-type');
     if (res.ok && contentType && contentType.includes('application/json')) {
       const serverAsset: MediaAsset = await res.json();
-      saveLocalMediaAsset(serverAsset);
+      await saveLocalMediaAsset(serverAsset);
       return serverAsset;
     }
   } catch {
     // Backend API unavailable (e.g. Netlify static hosting)
   }
 
-  // 2. Client-side optimized image generation
-  const { dataUrl, width, height } = await optimizeImageToDataUrl(file);
+  // 2. Client-side optimized image generation with Canvas
+  const { dataUrl, width, height } = await optimizeImageToDataUrl(file, 1200, 0.82);
 
   const localAsset: MediaAsset = {
     id: `med-local-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
@@ -120,13 +153,14 @@ export async function uploadImageUnified(
     uploadedAt: new Date().toISOString()
   };
 
-  saveLocalMediaAsset(localAsset);
+  await saveLocalMediaAsset(localAsset);
   return localAsset;
 }
 
-// Unified media list retrieval
+// Unified media list retrieval merging IndexedDB, localStorage, and bundled assets
 export async function fetchMediaListUnified(authHeaders?: Record<string, string>): Promise<MediaAsset[]> {
   const localAssets = getLocalMediaAssets();
+  const idbAssets: MediaAsset[] = (await getIdbItem<MediaAsset[]>(LOCAL_MEDIA_KEY)) || [];
   const bundledAssets: MediaAsset[] = (defaultClinicData.mediaAssets as any[]) || [];
 
   try {
@@ -136,9 +170,8 @@ export async function fetchMediaListUnified(authHeaders?: Record<string, string>
     const contentType = res.headers.get('content-type');
     if (res.ok && contentType && contentType.includes('application/json')) {
       const serverAssets: MediaAsset[] = await res.json();
-      // Combine server assets with any local additions
       const map = new Map<string, MediaAsset>();
-      [...localAssets, ...serverAssets].forEach((a) => {
+      [...idbAssets, ...localAssets, ...serverAssets].forEach((a) => {
         if (!map.has(a.id) && !map.has(a.url)) map.set(a.url, a);
       });
       return Array.from(map.values());
@@ -147,9 +180,9 @@ export async function fetchMediaListUnified(authHeaders?: Record<string, string>
     // Static mode
   }
 
-  // Combine local uploads with default clinic assets
+  // Combine IndexedDB, local uploads and default clinic assets
   const map = new Map<string, MediaAsset>();
-  [...localAssets, ...bundledAssets].forEach((a) => {
+  [...idbAssets, ...localAssets, ...bundledAssets].forEach((a) => {
     if (!map.has(a.id) && !map.has(a.url)) map.set(a.url, a);
   });
   return Array.from(map.values());

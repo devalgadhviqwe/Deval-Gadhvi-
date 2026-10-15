@@ -16,10 +16,11 @@ import { MediaPickerModal } from '../../components/admin/MediaPickerModal';
 
 export const AdminHomepageEditor: React.FC = () => {
   const { getAuthHeaders, hasRole } = useAuth();
-  const { refreshData } = useClinic();
+  const { sections: clinicSections, setCustomImage } = useClinic();
+  const homeSections = clinicSections.filter((s) => s.pageSlug === 'home');
 
-  const [sections, setSections] = useState<SectionContent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [sections, setSections] = useState<SectionContent[]>(homeSections);
+  const [loading, setLoading] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [successId, setSuccessId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -32,6 +33,12 @@ export const AdminHomepageEditor: React.FC = () => {
     fetchSections();
   }, []);
 
+  useEffect(() => {
+    if (homeSections.length > 0) {
+      setSections(homeSections);
+    }
+  }, [clinicSections]);
+
   const fetchSections = async () => {
     try {
       setLoading(true);
@@ -39,11 +46,16 @@ export const AdminHomepageEditor: React.FC = () => {
         headers: getAuthHeaders()
       });
       if (res.ok) {
-        const data = await res.json();
-        setSections(data);
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          setSections(data);
+          return;
+        }
       }
-    } catch (err) {
-      console.error('Failed to load sections:', err);
+      setSections(homeSections);
+    } catch {
+      setSections(homeSections);
     } finally {
       setLoading(false);
     }
@@ -65,23 +77,31 @@ export const AdminHomepageEditor: React.FC = () => {
       setSavingId(section.id);
       setErrorMsg(null);
 
-      const res = await fetch(`/api/admin/sections/${section.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders()
-        },
-        body: JSON.stringify(section)
-      });
+      try {
+        const res = await fetch(`/api/admin/sections/${section.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify(section)
+        });
+        if (res.ok) {
+          const contentType = res.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            await res.json();
+          }
+        }
+      } catch (err) {
+        console.warn('Backend unavailable, saving locally:', err);
+      }
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to save section');
+      if (section.imageUrl) {
+        await setCustomImage('section', section.id, section.imageUrl);
       }
 
       setSuccessId(section.id);
       setTimeout(() => setSuccessId(null), 3000);
-      await refreshData();
     } catch (err: any) {
       setErrorMsg(err.message || 'Error saving changes');
     } finally {

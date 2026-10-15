@@ -172,7 +172,7 @@ const ImageItemCard: React.FC<ImageItemCardProps> = ({
 
 export const AdminImagesManager: React.FC = () => {
   const { getAuthHeaders, hasRole } = useAuth();
-  const { doctors, services, sections, settings, setCustomImage, refreshData } = useClinic();
+  const { doctors, services, sections, settings, setCustomImage } = useClinic();
 
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
@@ -208,7 +208,6 @@ export const AdminImagesManager: React.FC = () => {
       const newAsset = await uploadImageUnified(file, category, getAuthHeaders());
 
       await setCustomImage(targetType, targetId, newAsset.url, imageField, additionalImages);
-      await refreshData();
       showSuccess(`Successfully uploaded and set new image for ${targetId}!`);
     } catch (err: any) {
       showError(err.message || 'Image upload failed');
@@ -232,7 +231,6 @@ export const AdminImagesManager: React.FC = () => {
     try {
       setUploadingTarget(`${targetType}_${targetId}_${imageField || 'primary'}`);
       await setCustomImage(targetType, targetId, newUrl, imageField, additionalImages);
-      await refreshData();
       showSuccess('Image updated successfully!');
     } catch (err: any) {
       showError(err.message || 'Failed to update image');
@@ -467,7 +465,6 @@ export const AdminImagesManager: React.FC = () => {
                   ];
                   const updated = [asset.url, currentImgs[1], currentImgs[2]];
                   await setCustomImage('section', 'sec-about-intro', asset.url, 'imageUrl', updated);
-                  await refreshData();
                   showSuccess('Updated Gallery Image 1!');
                 } catch (err: any) {
                   showError(err?.message || 'Upload failed');
@@ -483,13 +480,11 @@ export const AdminImagesManager: React.FC = () => {
                 ];
                 const updated = [newUrl, currentImgs[1], currentImgs[2]];
                 await setCustomImage('section', 'sec-about-intro', newUrl, 'imageUrl', updated);
-                await refreshData();
               }}
               onResetToDefault={async () => {
                 const currentImgs = aboutIntroSec.additionalImages || [];
                 const updated = ['/src/assets/images/gallery_screening_1_1791534688866.jpg', currentImgs[1], currentImgs[2]];
                 await setCustomImage('section', 'sec-about-intro', '/src/assets/images/gallery_screening_1_1791534688866.jpg', 'imageUrl', updated);
-                await refreshData();
               }}
             />
 
@@ -513,7 +508,6 @@ export const AdminImagesManager: React.FC = () => {
                   ];
                   const updated = [currentImgs[0], asset.url, currentImgs[2]];
                   await setCustomImage('section', 'sec-about-intro', asset.url, 'secondaryImageUrl', updated);
-                  await refreshData();
                   showSuccess('Updated Gallery Image 2!');
                 } catch (err: any) {
                   showError(err?.message || 'Upload failed');
@@ -529,13 +523,11 @@ export const AdminImagesManager: React.FC = () => {
                 ];
                 const updated = [currentImgs[0], newUrl, currentImgs[2]];
                 await setCustomImage('section', 'sec-about-intro', newUrl, 'secondaryImageUrl', updated);
-                await refreshData();
               }}
               onResetToDefault={async () => {
                 const currentImgs = aboutIntroSec.additionalImages || [];
                 const updated = [currentImgs[0], '/src/assets/images/gallery_screening_2_1791534700033.jpg', currentImgs[2]];
                 await setCustomImage('section', 'sec-about-intro', '/src/assets/images/gallery_screening_2_1791534700033.jpg', 'secondaryImageUrl', updated);
-                await refreshData();
               }}
             />
 
@@ -559,7 +551,6 @@ export const AdminImagesManager: React.FC = () => {
                   ];
                   const updated = [currentImgs[0], currentImgs[1], asset.url];
                   await setCustomImage('section', 'sec-about-intro', currentImgs[0], 'imageUrl', updated);
-                  await refreshData();
                   showSuccess('Updated Gallery Image 3!');
                 } catch (err: any) {
                   showError(err?.message || 'Upload failed');
@@ -575,13 +566,11 @@ export const AdminImagesManager: React.FC = () => {
                 ];
                 const updated = [currentImgs[0], currentImgs[1], newUrl];
                 await setCustomImage('section', 'sec-about-intro', currentImgs[0], 'imageUrl', updated);
-                await refreshData();
               }}
               onResetToDefault={async () => {
                 const currentImgs = aboutIntroSec.additionalImages || [];
                 const updated = [currentImgs[0], currentImgs[1], '/src/assets/images/gallery_screening_3_1791534712268.jpg'];
                 await setCustomImage('section', 'sec-about-intro', currentImgs[0], 'imageUrl', updated);
-                await refreshData();
               }}
             />
 

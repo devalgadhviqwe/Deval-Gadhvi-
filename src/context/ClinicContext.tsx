@@ -28,6 +28,7 @@ interface ClinicContextType {
 const ClinicContext = createContext<ClinicContextType | undefined>(undefined);
 
 import defaultClinicData from '../../data/clinic_data.json';
+import { setIdbItem, getIdbItem } from '../utils/idbStorage';
 
 const defaultBootstrapData: BootstrapData = {
   settings: defaultClinicData.globalSettings as any,
@@ -36,52 +37,68 @@ const defaultBootstrapData: BootstrapData = {
   services: (defaultClinicData.services as any[]).filter((s) => s.active),
   diagnostics: (defaultClinicData.diagnosticServices as any[]).filter((d) => d.active),
   testimonials: (defaultClinicData.testimonials as any[]),
-  sections: (defaultClinicData.sections as any[]).filter((s) => s.pageSlug === 'home' && s.isVisible),
+  sections: (defaultClinicData.sections as any[]).filter((s) => s.isVisible),
   allSections: (defaultClinicData.sections as any[]).filter((s) => s.isVisible)
 };
 
-// Pure helper to merge local custom images overrides
+// Pure helper to merge custom images overrides
+function mergeOverrides(serverData: BootstrapData, overrides: Record<string, string>): BootstrapData {
+  if (!overrides || Object.keys(overrides).length === 0) return serverData;
+
+  const mergedDoctors = serverData.doctors.map((doc) => {
+    const customUrl = overrides[`doctor_${doc.id}`] || overrides[`doctor_${doc.slug}`];
+    return customUrl ? { ...doc, imageUrl: customUrl } : doc;
+  });
+
+  const mergedServices = serverData.services.map((srv) => {
+    const customUrl = overrides[`service_${srv.id}`] || overrides[`service_${srv.slug}`];
+    return customUrl ? { ...srv, imageUrl: customUrl } : srv;
+  });
+
+  const mergedSections = serverData.sections.map((sec) => {
+    const customUrl = overrides[`section_${sec.id}`] || overrides[`section_${sec.sectionKey}`];
+    const customSecUrl = overrides[`section_${sec.id}_secondary`] || overrides[`section_${sec.sectionKey}_secondary`];
+    const customAdditionalRaw = overrides[`section_${sec.id}_additional`] || overrides[`section_${sec.sectionKey}_additional`];
+    let customAdditional: string[] | undefined;
+    if (customAdditionalRaw) {
+      try {
+        customAdditional = JSON.parse(customAdditionalRaw);
+      } catch {
+        // ignore
+      }
+    }
+    return {
+      ...sec,
+      imageUrl: customUrl || sec.imageUrl,
+      secondaryImageUrl: customSecUrl || sec.secondaryImageUrl,
+      additionalImages: customAdditional || sec.additionalImages
+    };
+  });
+
+  const mergedSettings = { ...serverData.settings };
+  if (overrides['logo_main'] !== undefined) {
+    mergedSettings.logoUrl = overrides['logo_main'] === '__RESET__' ? '' : overrides['logo_main'];
+  }
+  if (overrides['logo_dark'] !== undefined) {
+    mergedSettings.logoDarkUrl = overrides['logo_dark'] === '__RESET__' ? '' : overrides['logo_dark'];
+  }
+
+  return {
+    ...serverData,
+    settings: mergedSettings,
+    doctors: mergedDoctors,
+    services: mergedServices,
+    sections: mergedSections,
+    allSections: mergedSections
+  };
+}
+
 function mergeLocalOverrides(serverData: BootstrapData): BootstrapData {
   try {
     const savedOverridesRaw = localStorage.getItem('nma_custom_images_overrides');
     if (!savedOverridesRaw) return serverData;
     const overrides: Record<string, string> = JSON.parse(savedOverridesRaw);
-
-    const mergedDoctors = serverData.doctors.map((doc) => {
-      const customUrl = overrides[`doctor_${doc.id}`] || overrides[`doctor_${doc.slug}`];
-      return customUrl ? { ...doc, imageUrl: customUrl } : doc;
-    });
-
-    const mergedServices = serverData.services.map((srv) => {
-      const customUrl = overrides[`service_${srv.id}`] || overrides[`service_${srv.slug}`];
-      return customUrl ? { ...srv, imageUrl: customUrl } : srv;
-    });
-
-    const mergedSections = serverData.sections.map((sec) => {
-      const customUrl = overrides[`section_${sec.id}`] || overrides[`section_${sec.sectionKey}`];
-      const customSecUrl = overrides[`section_${sec.id}_secondary`] || overrides[`section_${sec.sectionKey}_secondary`];
-      return {
-        ...sec,
-        imageUrl: customUrl || sec.imageUrl,
-        secondaryImageUrl: customSecUrl || sec.secondaryImageUrl
-      };
-    });
-
-    const mergedSettings = { ...serverData.settings };
-    if (overrides['logo_main'] !== undefined) {
-      mergedSettings.logoUrl = overrides['logo_main'] === '__RESET__' ? '' : overrides['logo_main'];
-    }
-    if (overrides['logo_dark'] !== undefined) {
-      mergedSettings.logoDarkUrl = overrides['logo_dark'] === '__RESET__' ? '' : overrides['logo_dark'];
-    }
-
-    return {
-      ...serverData,
-      settings: mergedSettings,
-      doctors: mergedDoctors,
-      services: mergedServices,
-      sections: mergedSections
-    };
+    return mergeOverrides(serverData, overrides);
   } catch {
     return serverData;
   }
@@ -103,6 +120,25 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Load IndexedDB overrides on startup
+  useEffect(() => {
+    getIdbItem<Record<string, string>>('nma_custom_images_overrides').then((idbOverrides) => {
+      if (idbOverrides && Object.keys(idbOverrides).length > 0) {
+        setData((prev) => {
+          if (!prev) return prev;
+          try {
+            const savedRaw = localStorage.getItem('nma_custom_images_overrides');
+            const localOverrides: Record<string, string> = savedRaw ? JSON.parse(savedRaw) : {};
+            const combined = { ...idbOverrides, ...localOverrides };
+            return mergeOverrides(prev, combined);
+          } catch {
+            return mergeOverrides(prev, idbOverrides);
+          }
+        });
+      }
+    });
+  }, []);
+
   const applyLocalOverrides = useCallback((serverData: BootstrapData): BootstrapData => {
     return mergeLocalOverrides(serverData);
   }, []);
@@ -112,7 +148,6 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setError(null);
       const res = await fetch('/api/public/bootstrap');
       if (!res.ok) {
-        // Fallback silently in static hosting environments like Netlify
         return;
       }
       const contentType = res.headers.get('content-type');
@@ -139,7 +174,6 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         if (merged.theme.borderRadius) root.style.setProperty('--radius', merged.theme.borderRadius);
       }
     } catch (err: any) {
-      // In static deployment mode (Netlify), API is not hosted so we cleanly use bundled state
       console.info('Static hosting detected, utilizing bundled clinic data:', err?.message);
     } finally {
       setIsLoading(false);
@@ -157,7 +191,7 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     imageField?: string,
     additionalImages?: string[]
   ): Promise<boolean> => {
-    // 1. Immediately store in localStorage overrides
+    // 1. Immediately store in localStorage & IndexedDB overrides
     try {
       const savedRaw = localStorage.getItem('nma_custom_images_overrides');
       const overrides: Record<string, string> = savedRaw ? JSON.parse(savedRaw) : {};
@@ -167,9 +201,17 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             ? `${targetType}_${targetId}_secondary`
             : `${targetType}_${targetId}`);
       overrides[key] = imageUrl;
-      localStorage.setItem('nma_custom_images_overrides', JSON.stringify(overrides));
+      if (additionalImages && additionalImages.length > 0) {
+        overrides[`${targetType}_${targetId}_additional`] = JSON.stringify(additionalImages);
+      }
+      try {
+        localStorage.setItem('nma_custom_images_overrides', JSON.stringify(overrides));
+      } catch {
+        // Quota safety
+      }
+      await setIdbItem('nma_custom_images_overrides', overrides);
     } catch (err) {
-      console.warn('Failed saving to localStorage overrides:', err);
+      console.warn('Failed saving overrides:', err);
     }
 
     // 2. Immediately update in-memory React state
@@ -197,23 +239,45 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return { ...prev, services: updatedServices };
       }
       if (targetType === 'section') {
-        const updatedSections = prev.sections.map((s) => {
-          if (s.id === targetId || s.sectionKey === targetId) {
-            return {
-              ...s,
-              imageUrl: imageField === 'secondaryImageUrl' ? s.imageUrl : imageUrl,
-              secondaryImageUrl: imageField === 'secondaryImageUrl' ? imageUrl : s.secondaryImageUrl,
-              additionalImages: additionalImages || s.additionalImages
-            };
-          }
-          return s;
-        });
-        return { ...prev, sections: updatedSections };
+        const exists = prev.sections.some((s) => s.id === targetId || s.sectionKey === targetId);
+        let updatedSections: SectionContent[];
+        if (exists) {
+          updatedSections = prev.sections.map((s) => {
+            if (s.id === targetId || s.sectionKey === targetId) {
+              return {
+                ...s,
+                imageUrl: imageField === 'secondaryImageUrl' ? s.imageUrl : imageUrl,
+                secondaryImageUrl: imageField === 'secondaryImageUrl' ? imageUrl : s.secondaryImageUrl,
+                additionalImages: additionalImages || s.additionalImages
+              };
+            }
+            return s;
+          });
+        } else {
+          updatedSections = [
+            ...prev.sections,
+            {
+              id: targetId,
+              pageSlug: 'about',
+              sectionKey: targetId.replace('sec-', ''),
+              title: '',
+              subtitle: '',
+              bodyText: '',
+              imageUrl: imageField === 'secondaryImageUrl' ? '' : imageUrl,
+              secondaryImageUrl: imageField === 'secondaryImageUrl' ? imageUrl : '',
+              additionalImages: additionalImages,
+              isVisible: true,
+              displayOrder: 99,
+              updatedAt: new Date().toISOString()
+            }
+          ];
+        }
+        return { ...prev, sections: updatedSections, allSections: updatedSections };
       }
       return prev;
     });
 
-    // 3. Persist to server backend
+    // 3. Persist to server backend if reachable
     try {
       const token = localStorage.getItem('nma_admin_token');
       const res = await fetch('/api/admin/images/update-target', {
@@ -225,8 +289,7 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         body: JSON.stringify({ targetType, targetId, imageUrl, imageField, additionalImages })
       });
       return res.ok;
-    } catch (err) {
-      console.warn('Server sync failed, retained in client persistence:', err);
+    } catch {
       return true; // Still true because client retained it
     }
   };

@@ -23,10 +23,10 @@ import { MediaPickerModal } from '../../components/admin/MediaPickerModal';
 
 export const AdminSettings: React.FC = () => {
   const { getAuthHeaders, hasRole } = useAuth();
-  const { refreshData } = useClinic();
+  const { settings: clinicSettings, refreshData, setCustomImage } = useClinic();
 
-  const [settings, setSettings] = useState<GlobalSettings | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState<GlobalSettings | null>(clinicSettings);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -42,6 +42,12 @@ export const AdminSettings: React.FC = () => {
     fetchSettings();
   }, []);
 
+  useEffect(() => {
+    if (clinicSettings) {
+      setSettings(clinicSettings);
+    }
+  }, [clinicSettings]);
+
   const fetchSettings = async () => {
     try {
       setLoading(true);
@@ -49,11 +55,16 @@ export const AdminSettings: React.FC = () => {
         headers: getAuthHeaders()
       });
       if (res.ok) {
-        const data = await res.json();
-        setSettings(data);
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          setSettings(data);
+          return;
+        }
       }
-    } catch (err) {
-      console.error('Failed to load settings:', err);
+      setSettings(clinicSettings);
+    } catch {
+      setSettings(clinicSettings);
     } finally {
       setLoading(false);
     }
@@ -111,23 +122,34 @@ export const AdminSettings: React.FC = () => {
       setErrorMsg(null);
       setSuccess(false);
 
-      const res = await fetch('/api/admin/settings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders()
-        },
-        body: JSON.stringify(settings)
-      });
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify(settings)
+        });
+        if (res.ok) {
+          const contentType = res.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            await res.json();
+          }
+        }
+      } catch (err) {
+        console.warn('Backend unavailable, saving locally:', err);
+      }
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to update settings');
+      if (settings.logoUrl !== undefined) {
+        await setCustomImage('logo', 'main', settings.logoUrl || '__RESET__', 'logoUrl');
+      }
+      if (settings.logoDarkUrl !== undefined) {
+        await setCustomImage('logo', 'dark', settings.logoDarkUrl || '__RESET__', 'logoDarkUrl');
       }
 
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3500);
-      await refreshData();
     } catch (err: any) {
       setErrorMsg(err.message || 'Error updating settings');
     } finally {
