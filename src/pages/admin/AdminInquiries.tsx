@@ -15,10 +15,21 @@ import {
 import { ContactSubmission } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 
+import defaultClinicData from '../../../data/clinic_data.json';
+
 export const AdminInquiries: React.FC = () => {
   const { getAuthHeaders, hasRole } = useAuth();
-  const [inquiries, setInquiries] = useState<ContactSubmission[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const getInitialInquiries = (): ContactSubmission[] => {
+    try {
+      const stored = localStorage.getItem('nma_contact_submissions');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return (defaultClinicData.contactSubmissions as any[]) || [];
+  };
+
+  const [inquiries, setInquiries] = useState<ContactSubmission[]>(getInitialInquiries);
+  const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeInquiry, setActiveInquiry] = useState<ContactSubmission | null>(null);
@@ -29,18 +40,21 @@ export const AdminInquiries: React.FC = () => {
 
   const fetchInquiries = async () => {
     try {
-      setLoading(true);
       const res = await fetch('/api/admin/inquiries', {
         headers: getAuthHeaders()
       });
       if (res.ok) {
-        const data = await res.json();
-        setInquiries(data);
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          setInquiries(data);
+          try {
+            localStorage.setItem('nma_contact_submissions', JSON.stringify(data));
+          } catch {}
+        }
       }
-    } catch (err) {
-      console.error('Failed to load inquiries:', err);
-    } finally {
-      setLoading(false);
+    } catch {
+      // Fallback already initialized
     }
   };
 
@@ -48,7 +62,7 @@ export const AdminInquiries: React.FC = () => {
     if (!hasRole(['super_admin', 'editor'])) return;
 
     try {
-      const res = await fetch(`/api/admin/inquiries/${id}`, {
+      await fetch(`/api/admin/inquiries/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -56,16 +70,22 @@ export const AdminInquiries: React.FC = () => {
         },
         body: JSON.stringify({ status: newStatus, adminNotes: notes })
       });
-
-      if (res.ok) {
-        const updated = await res.json();
-        setInquiries((prev) => prev.map((inq) => (inq.id === id ? updated : inq)));
-        if (activeInquiry && activeInquiry.id === id) {
-          setActiveInquiry(updated);
-        }
-      }
     } catch (err) {
-      console.error('Update status error:', err);
+      console.warn('Backend unavailable, updating locally:', err);
+    }
+
+    setInquiries((prev) => {
+      const updated = prev.map((inq) =>
+        inq.id === id ? { ...inq, status: newStatus, adminNotes: notes ?? inq.adminNotes } : inq
+      );
+      try {
+        localStorage.setItem('nma_contact_submissions', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+
+    if (activeInquiry && activeInquiry.id === id) {
+      setActiveInquiry({ ...activeInquiry, status: newStatus, adminNotes: notes ?? activeInquiry.adminNotes });
     }
   };
 
@@ -78,21 +98,46 @@ export const AdminInquiries: React.FC = () => {
     if (!window.confirm(`Permanently delete inquiry from "${name}"?`)) return;
 
     try {
-      const res = await fetch(`/api/admin/inquiries/${id}`, {
+      await fetch(`/api/admin/inquiries/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
-      if (res.ok) {
-        setInquiries((prev) => prev.filter((inq) => inq.id !== id));
-        if (activeInquiry?.id === id) setActiveInquiry(null);
-      }
     } catch (err) {
-      console.error('Delete error:', err);
+      console.warn('Backend unavailable, deleting locally:', err);
     }
+
+    setInquiries((prev) => {
+      const updated = prev.filter((inq) => inq.id !== id);
+      try {
+        localStorage.setItem('nma_contact_submissions', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    if (activeInquiry?.id === id) setActiveInquiry(null);
   };
 
   const handleExportCsv = () => {
-    window.location.href = '/api/admin/inquiries/export-csv';
+    const headers = ['ID', 'Full Name', 'Phone', 'Email', 'Preferred Date', 'Service Requested', 'Doctor Requested', 'Status', 'Submitted At', 'Message'];
+    const rows = inquiries.map((inq) => [
+      inq.id,
+      `"${(inq.fullName || '').replace(/"/g, '""')}"`,
+      `"${(inq.phone || '').replace(/"/g, '""')}"`,
+      `"${(inq.email || '').replace(/"/g, '""')}"`,
+      `"${inq.preferredDate || ''}"`,
+      `"${inq.serviceRequested || ''}"`,
+      `"${inq.doctorRequested || ''}"`,
+      `"${inq.status}"`,
+      `"${inq.submittedAt}"`,
+      `"${(inq.message || '').replace(/"/g, '""')}"`
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `newark_inquiries_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const filtered = inquiries.filter((inq) => {

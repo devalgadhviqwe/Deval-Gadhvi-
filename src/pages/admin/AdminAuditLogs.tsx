@@ -3,10 +3,21 @@ import { FileText, Search, Clock, User, ShieldCheck, Activity } from 'lucide-rea
 import { AuditLog } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 
+import defaultClinicData from '../../../data/clinic_data.json';
+
 export const AdminAuditLogs: React.FC = () => {
   const { getAuthHeaders } = useAuth();
-  const [logs, setLogs] = useState<AuditLog[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const getInitialLogs = (): AuditLog[] => {
+    try {
+      const stored = localStorage.getItem('nma_audit_logs');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return (defaultClinicData.auditLogs as any[]) || [];
+  };
+
+  const [logs, setLogs] = useState<AuditLog[]>(getInitialLogs);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -15,18 +26,21 @@ export const AdminAuditLogs: React.FC = () => {
 
   const fetchLogs = async () => {
     try {
-      setLoading(true);
       const res = await fetch('/api/admin/audit-logs', {
         headers: getAuthHeaders()
       });
       if (res.ok) {
-        const data = await res.json();
-        setLogs(data);
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          setLogs(data);
+          try {
+            localStorage.setItem('nma_audit_logs', JSON.stringify(data));
+          } catch {}
+        }
       }
-    } catch (err) {
-      console.error('Failed to load audit logs:', err);
-    } finally {
-      setLoading(false);
+    } catch {
+      // Fallback already initialized
     }
   };
 

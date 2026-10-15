@@ -4,19 +4,30 @@ import { ThemeSettings } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { useClinic } from '../../context/ClinicContext';
 
+import defaultClinicData from '../../../data/clinic_data.json';
+
 export const AdminTheme: React.FC = () => {
   const { getAuthHeaders, hasRole } = useAuth();
-  const { refreshData } = useClinic();
+  const { theme: clinicTheme } = useClinic();
 
-  const [theme, setTheme] = useState<ThemeSettings>({
-    primaryColor: '#1e3a8a',
-    secondaryColor: '#0284c7',
-    accentColor: '#0d9488',
-    backgroundColor: '#f8fafc',
-    fontFamily: 'Plus Jakarta Sans',
-    borderRadius: '0.5rem'
-  });
-  const [loading, setLoading] = useState(true);
+  const getInitialTheme = (): ThemeSettings => {
+    try {
+      const stored = localStorage.getItem('nma_custom_theme');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    if (clinicTheme) return clinicTheme;
+    return (defaultClinicData.themeSettings as any) || {
+      primaryColor: '#4380FF',
+      secondaryColor: '#0284c7',
+      accentColor: '#0d9488',
+      backgroundColor: '#f8fafc',
+      fontFamily: 'Plus Jakarta Sans',
+      borderRadius: '0.5rem'
+    };
+  };
+
+  const [theme, setTheme] = useState<ThemeSettings>(getInitialTheme);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -26,18 +37,21 @@ export const AdminTheme: React.FC = () => {
 
   const fetchTheme = async () => {
     try {
-      setLoading(true);
       const res = await fetch('/api/admin/theme', {
         headers: getAuthHeaders()
       });
       if (res.ok) {
-        const data = await res.json();
-        setTheme(data);
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          setTheme(data);
+          try {
+            localStorage.setItem('nma_custom_theme', JSON.stringify(data));
+          } catch {}
+        }
       }
-    } catch (err) {
-      console.error('Error fetching theme:', err);
-    } finally {
-      setLoading(false);
+    } catch {
+      // Fallback already initialized
     }
   };
 
@@ -50,20 +64,33 @@ export const AdminTheme: React.FC = () => {
 
     try {
       setSaving(true);
-      const res = await fetch('/api/admin/theme', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders()
-        },
-        body: JSON.stringify(theme)
-      });
-
-      if (res.ok) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
-        await refreshData();
+      try {
+        await fetch('/api/admin/theme', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify(theme)
+        });
+      } catch (err) {
+        console.warn('Backend unavailable, saving locally:', err);
       }
+
+      try {
+        localStorage.setItem('nma_custom_theme', JSON.stringify(theme));
+      } catch {}
+
+      // Apply theme CSS variables to page
+      const root = document.documentElement;
+      if (theme.primaryColor) root.style.setProperty('--primary', theme.primaryColor);
+      if (theme.secondaryColor) root.style.setProperty('--secondary', theme.secondaryColor);
+      if (theme.accentColor) root.style.setProperty('--accent', theme.accentColor);
+      if (theme.backgroundColor) root.style.setProperty('--background', theme.backgroundColor);
+      if (theme.borderRadius) root.style.setProperty('--radius', theme.borderRadius);
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
     } catch (err) {
       console.error('Save error:', err);
     } finally {
@@ -72,14 +99,18 @@ export const AdminTheme: React.FC = () => {
   };
 
   const resetToDefault = () => {
-    setTheme({
-      primaryColor: '#1e3a8a',
+    const defaultTheme = {
+      primaryColor: '#4380FF',
       secondaryColor: '#0284c7',
       accentColor: '#0d9488',
       backgroundColor: '#f8fafc',
       fontFamily: 'Plus Jakarta Sans',
       borderRadius: '0.5rem'
-    });
+    };
+    setTheme(defaultTheme);
+    try {
+      localStorage.setItem('nma_custom_theme', JSON.stringify(defaultTheme));
+    } catch {}
   };
 
   if (loading) {

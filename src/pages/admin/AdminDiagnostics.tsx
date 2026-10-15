@@ -4,12 +4,23 @@ import { DiagnosticService } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { useClinic } from '../../context/ClinicContext';
 
+import defaultClinicData from '../../../data/clinic_data.json';
+
 export const AdminDiagnostics: React.FC = () => {
   const { getAuthHeaders, hasRole } = useAuth();
-  const { refreshData } = useClinic();
+  const { diagnostics: clinicDiagnostics } = useClinic();
 
-  const [diagnostics, setDiagnostics] = useState<DiagnosticService[]>([]);
-  const [loading, setLoading] = useState(true);
+  const getInitialDiagnostics = (): DiagnosticService[] => {
+    try {
+      const stored = localStorage.getItem('nma_custom_diagnostics');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    if (clinicDiagnostics && clinicDiagnostics.length > 0) return clinicDiagnostics;
+    return defaultClinicData.diagnosticServices as any[];
+  };
+
+  const [diagnostics, setDiagnostics] = useState<DiagnosticService[]>(getInitialDiagnostics);
+  const [loading, setLoading] = useState(false);
   const [editingDiag, setEditingDiag] = useState<DiagnosticService | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -21,18 +32,21 @@ export const AdminDiagnostics: React.FC = () => {
 
   const fetchDiagnostics = async () => {
     try {
-      setLoading(true);
       const res = await fetch('/api/admin/diagnostics', {
         headers: getAuthHeaders()
       });
       if (res.ok) {
-        const data = await res.json();
-        setDiagnostics(data);
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          setDiagnostics(data);
+          try {
+            localStorage.setItem('nma_custom_diagnostics', JSON.stringify(data));
+          } catch {}
+        }
       }
-    } catch (err) {
-      console.error('Failed to load diagnostics:', err);
-    } finally {
-      setLoading(false);
+    } catch {
+      // Fallback already initialized
     }
   };
 
@@ -70,27 +84,35 @@ export const AdminDiagnostics: React.FC = () => {
       setSaving(true);
       setErrorMsg(null);
 
-      const isNew = !editingDiag.id;
-      const url = isNew ? '/api/admin/diagnostics' : `/api/admin/diagnostics/${editingDiag.id}`;
-      const method = isNew ? 'POST' : 'PUT';
+      const diagId = editingDiag.id || `diag-${Date.now()}`;
+      const savedDiag = { ...editingDiag, id: diagId };
 
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders()
-        },
-        body: JSON.stringify(editingDiag)
-      });
+      try {
+        const isNew = !editingDiag.id;
+        const url = isNew ? '/api/admin/diagnostics' : `/api/admin/diagnostics/${diagId}`;
+        const method = isNew ? 'POST' : 'PUT';
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to save diagnostic test');
+        await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify(savedDiag)
+        });
+      } catch (err) {
+        console.warn('Backend unavailable, saving locally:', err);
       }
 
+      setDiagnostics((prev) => {
+        const exists = prev.some((d) => d.id === savedDiag.id);
+        const updated = exists ? prev.map((d) => (d.id === savedDiag.id ? savedDiag : d)) : [...prev, savedDiag];
+        try {
+          localStorage.setItem('nma_custom_diagnostics', JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
       setIsModalOpen(false);
-      await fetchDiagnostics();
-      await refreshData();
     } catch (err: any) {
       setErrorMsg(err.message || 'Error occurred');
     } finally {
@@ -106,17 +128,21 @@ export const AdminDiagnostics: React.FC = () => {
     if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
 
     try {
-      const res = await fetch(`/api/admin/diagnostics/${id}`, {
+      await fetch(`/api/admin/diagnostics/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
-      if (res.ok) {
-        await fetchDiagnostics();
-        await refreshData();
-      }
     } catch (err) {
-      console.error('Delete error:', err);
+      console.warn('Backend unavailable, deleting locally:', err);
     }
+
+    setDiagnostics((prev) => {
+      const updated = prev.filter((d) => d.id !== id);
+      try {
+        localStorage.setItem('nma_custom_diagnostics', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
   };
 
   return (

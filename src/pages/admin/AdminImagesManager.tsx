@@ -172,7 +172,7 @@ const ImageItemCard: React.FC<ImageItemCardProps> = ({
 
 export const AdminImagesManager: React.FC = () => {
   const { getAuthHeaders, hasRole } = useAuth();
-  const { doctors, services, sections, settings, setCustomImage } = useClinic();
+  const { doctors, services, sections, settings, setCustomImage, refreshData } = useClinic();
 
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
@@ -242,7 +242,12 @@ export const AdminImagesManager: React.FC = () => {
   // HOME SECTIONS
   const heroSec = sections.find((s) => s.sectionKey === 'hero') || {
     id: 'sec-hero',
-    imageUrl: '/src/assets/images/nma_hero_consultation_teal_1791532516993.jpg'
+    imageUrl: '/src/assets/images/nma_hero_consultation_teal_1791532516993.jpg',
+    additionalImages: [
+      '/src/assets/images/avatar_patient_1_1791532566289.jpg',
+      '/src/assets/images/avatar_patient_2_1791532576262.jpg',
+      '/src/assets/images/avatar_patient_3_1791532595296.jpg'
+    ]
   };
   const servicesSec = sections.find((s) => s.sectionKey === 'services') || {
     id: 'sec-services',
@@ -327,7 +332,7 @@ export const AdminImagesManager: React.FC = () => {
       <div className="border-b border-slate-200">
         <nav className="flex space-x-2 sm:space-x-8 overflow-x-auto pb-px">
           {[
-            { id: 'home', label: 'Home Page', icon: Home, count: 5 },
+            { id: 'home', label: 'Home Page', icon: Home, count: 8 },
             { id: 'about', label: 'About Page', icon: Info, count: 6 },
             { id: 'services', label: 'Services', icon: Stethoscope, count: services.length },
             { id: 'providers', label: 'Providers / Doctors', icon: Users, count: doctors.length },
@@ -434,6 +439,117 @@ export const AdminImagesManager: React.FC = () => {
               onDirectUpload={(file) => handleDirectUpload('section', 'sec-process', file)}
               onSelectImage={(newUrl) => handleSelectImage('section', 'sec-process', newUrl)}
               onResetToDefault={() => handleSelectImage('section', 'sec-process', '/src/assets/images/nma_hero_consultation_1791527202023.jpg')}
+            />
+
+            {/* 6. Hero Patient Avatar 1 */}
+            <ImageItemCard
+              title="Hero Indicator: Patient Avatar 1"
+              subtitle="First circular avatar in the '1000+ Appointments' badge under the hero CTA buttons."
+              locationLabel="Home: Hero Avatar 1"
+              currentUrl={heroSec.additionalImages?.[0] || '/src/assets/images/avatar_patient_1_1791532566289.jpg'}
+              defaultFallbackUrl="/src/assets/images/avatar_patient_1_1791532566289.jpg"
+              aspectRatioLabel="Circular Avatar (1:1)"
+              uploading={uploadingTarget === 'section_sec-hero_avatar1'}
+              onDirectUpload={async (file) => {
+                const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+                const cur = heroSec.additionalImages || [
+                  '/src/assets/images/avatar_patient_1_1791532566289.jpg',
+                  '/src/assets/images/avatar_patient_2_1791532576262.jpg',
+                  '/src/assets/images/avatar_patient_3_1791532595296.jpg'
+                ];
+                const updated = [asset.url, cur[1], cur[2]];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+                showSuccess('Updated Patient Avatar 1!');
+              }}
+              onSelectImage={async (newUrl) => {
+                const cur = heroSec.additionalImages || [
+                  '/src/assets/images/avatar_patient_1_1791532566289.jpg',
+                  '/src/assets/images/avatar_patient_2_1791532576262.jpg',
+                  '/src/assets/images/avatar_patient_3_1791532595296.jpg'
+                ];
+                const updated = [newUrl, cur[1], cur[2]];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+                showSuccess('Updated Patient Avatar 1!');
+              }}
+              onResetToDefault={async () => {
+                const cur = heroSec.additionalImages || [];
+                const updated = ['/src/assets/images/avatar_patient_1_1791532566289.jpg', cur[1], cur[2]];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+              }}
+            />
+
+            {/* 7. Hero Patient Avatar 2 */}
+            <ImageItemCard
+              title="Hero Indicator: Patient Avatar 2"
+              subtitle="Center circular avatar in the '1000+ Appointments' badge under the hero CTA buttons."
+              locationLabel="Home: Hero Avatar 2"
+              currentUrl={heroSec.additionalImages?.[1] || '/src/assets/images/avatar_patient_2_1791532576262.jpg'}
+              defaultFallbackUrl="/src/assets/images/avatar_patient_2_1791532576262.jpg"
+              aspectRatioLabel="Circular Avatar (1:1)"
+              uploading={uploadingTarget === 'section_sec-hero_avatar2'}
+              onDirectUpload={async (file) => {
+                const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+                const cur = heroSec.additionalImages || [
+                  '/src/assets/images/avatar_patient_1_1791532566289.jpg',
+                  '/src/assets/images/avatar_patient_2_1791532576262.jpg',
+                  '/src/assets/images/avatar_patient_3_1791532595296.jpg'
+                ];
+                const updated = [cur[0], asset.url, cur[2]];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+                showSuccess('Updated Patient Avatar 2!');
+              }}
+              onSelectImage={async (newUrl) => {
+                const cur = heroSec.additionalImages || [
+                  '/src/assets/images/avatar_patient_1_1791532566289.jpg',
+                  '/src/assets/images/avatar_patient_2_1791532576262.jpg',
+                  '/src/assets/images/avatar_patient_3_1791532595296.jpg'
+                ];
+                const updated = [cur[0], newUrl, cur[2]];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+                showSuccess('Updated Patient Avatar 2!');
+              }}
+              onResetToDefault={async () => {
+                const cur = heroSec.additionalImages || [];
+                const updated = [cur[0], '/src/assets/images/avatar_patient_2_1791532576262.jpg', cur[2]];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+              }}
+            />
+
+            {/* 8. Hero Patient Avatar 3 */}
+            <ImageItemCard
+              title="Hero Indicator: Patient Avatar 3"
+              subtitle="Right circular avatar in the '1000+ Appointments' badge under the hero CTA buttons."
+              locationLabel="Home: Hero Avatar 3"
+              currentUrl={heroSec.additionalImages?.[2] || '/src/assets/images/avatar_patient_3_1791532595296.jpg'}
+              defaultFallbackUrl="/src/assets/images/avatar_patient_3_1791532595296.jpg"
+              aspectRatioLabel="Circular Avatar (1:1)"
+              uploading={uploadingTarget === 'section_sec-hero_avatar3'}
+              onDirectUpload={async (file) => {
+                const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+                const cur = heroSec.additionalImages || [
+                  '/src/assets/images/avatar_patient_1_1791532566289.jpg',
+                  '/src/assets/images/avatar_patient_2_1791532576262.jpg',
+                  '/src/assets/images/avatar_patient_3_1791532595296.jpg'
+                ];
+                const updated = [cur[0], cur[1], asset.url];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+                showSuccess('Updated Patient Avatar 3!');
+              }}
+              onSelectImage={async (newUrl) => {
+                const cur = heroSec.additionalImages || [
+                  '/src/assets/images/avatar_patient_1_1791532566289.jpg',
+                  '/src/assets/images/avatar_patient_2_1791532576262.jpg',
+                  '/src/assets/images/avatar_patient_3_1791532595296.jpg'
+                ];
+                const updated = [cur[0], cur[1], newUrl];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+                showSuccess('Updated Patient Avatar 3!');
+              }}
+              onResetToDefault={async () => {
+                const cur = heroSec.additionalImages || [];
+                const updated = [cur[0], cur[1], '/src/assets/images/avatar_patient_3_1791532595296.jpg'];
+                await setCustomImage('section', 'sec-hero', heroSec.imageUrl || '', 'imageUrl', updated);
+              }}
             />
           </div>
         </div>

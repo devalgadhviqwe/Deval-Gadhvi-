@@ -58,6 +58,9 @@ export const HomePage: React.FC = () => {
   const testSection = sections.find((s) => s.sectionKey === 'testimonials');
 
   const heroImage = heroSection?.imageUrl || '/src/assets/images/nma_hero_consultation_teal_1791532516993.jpg';
+  const avatar1 = heroSection?.additionalImages?.[0] || '/src/assets/images/avatar_patient_1_1791532566289.jpg';
+  const avatar2 = heroSection?.additionalImages?.[1] || '/src/assets/images/avatar_patient_2_1791532576262.jpg';
+  const avatar3 = heroSection?.additionalImages?.[2] || '/src/assets/images/avatar_patient_3_1791532595296.jpg';
 
   return (
     <div className="bg-white min-h-screen">
@@ -107,17 +110,17 @@ export const HomePage: React.FC = () => {
               >
                 <div className="flex items-center">
                   <img
-                    src="/src/assets/images/avatar_patient_1_1791532566289.jpg"
+                    src={avatar1}
                     alt="Patient"
                     className="w-9 h-9 rounded-full border-2 border-white object-cover shadow-2xs"
                   />
                   <img
-                    src="/src/assets/images/avatar_patient_2_1791532576262.jpg"
+                    src={avatar2}
                     alt="Patient"
                     className="w-9 h-9 rounded-full border-2 border-white -ml-2.5 object-cover shadow-2xs"
                   />
                   <img
-                    src="/src/assets/images/avatar_patient_3_1791532595296.jpg"
+                    src={avatar3}
                     alt="Patient"
                     className="w-9 h-9 rounded-full border-2 border-white -ml-2.5 object-cover shadow-2xs"
                   />
