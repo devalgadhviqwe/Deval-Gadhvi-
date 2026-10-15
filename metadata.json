@@ -1,0 +1,6 @@
+{
+  "name": "Newark Medical Associates",
+  "description": "Comprehensive primary care, preventative health, cardiology, and physical therapy in Newark, NJ. Professional healthcare services and administrative CMS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
