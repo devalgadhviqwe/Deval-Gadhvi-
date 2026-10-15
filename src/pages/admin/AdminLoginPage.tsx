@@ -7,8 +7,8 @@ export const AdminLoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('admin@newarkmedicalassociates.com');
-  const [password, setPassword] = useState('AdminPassword2026!');
+  const [username, setUsername] = useState('NewarkMedicalAssociates');
+  const [password, setPassword] = useState('Newark$123');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,36 +17,71 @@ export const AdminLoginPage: React.FC = () => {
     setLoading(true);
     setError(null);
 
+    const cleanUser = username.trim();
+    const cleanPass = password.trim();
+
+    // 1. First attempt server login if backend API is reachable
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email: cleanUser, username: cleanUser, password: cleanPass })
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Login failed');
+      const contentType = res.headers.get('content-type');
+      if (res.ok && contentType && contentType.includes('application/json')) {
+        const data = await res.json();
+        login(data.token, data.user);
+        navigate('/admin');
+        return;
+      } else if (!res.ok && contentType && contentType.includes('application/json')) {
+        const data = await res.json();
+        throw new Error(data.error || 'Invalid credentials');
       }
-
-      login(data.token, data.user);
-      navigate('/admin');
-    } catch (err: any) {
-      setError(err.message || 'Authentication error');
-    } finally {
-      setLoading(false);
+    } catch (apiErr: any) {
+      if (apiErr.message === 'Invalid credentials' || apiErr.message === 'Invalid email or password') {
+        setError(apiErr.message);
+        setLoading(false);
+        return;
+      }
+      // If network error / 404 on static hosting like Netlify, fall back to client authentication
     }
+
+    // 2. Client-side authentication fallback for static deployments (Netlify)
+    const isValidAdmin =
+      (cleanUser.toLowerCase() === 'newarkmedicalassociates' || cleanUser.toLowerCase() === 'admin@newarkmedicalassociates.com') &&
+      cleanPass === 'Newark$123';
+
+    const isValidEditor = cleanUser.toLowerCase() === 'editor@newarkmedicalassociates.com' && cleanPass === 'EditorPassword2026!';
+    const isValidViewer = cleanUser.toLowerCase() === 'viewer@newarkmedicalassociates.com' && cleanPass === 'ViewerPassword2026!';
+
+    if (isValidAdmin || isValidEditor || isValidViewer) {
+      const role = isValidAdmin ? 'super_admin' : (isValidEditor ? 'editor' : 'viewer');
+      const staticUser = {
+        id: isValidAdmin ? 'usr-1' : (isValidEditor ? 'usr-2' : 'usr-3'),
+        name: isValidAdmin ? 'Newark Medical Associates Admin' : (isValidEditor ? 'Clinical Content Editor' : 'Clinical Auditor'),
+        email: cleanUser,
+        role: role as any,
+        createdAt: new Date().toISOString()
+      };
+      const staticToken = `nma-jwt-${role}-${Date.now()}`;
+      login(staticToken, staticUser);
+      navigate('/admin');
+    } else {
+      setError('Invalid username or password. Please verify your credentials.');
+    }
+    setLoading(false);
   };
 
   const setCredentials = (role: 'admin' | 'editor' | 'viewer') => {
     if (role === 'admin') {
-      setEmail('admin@newarkmedicalassociates.com');
-      setPassword('AdminPassword2026!');
+      setUsername('NewarkMedicalAssociates');
+      setPassword('Newark$123');
     } else if (role === 'editor') {
-      setEmail('editor@newarkmedicalassociates.com');
+      setUsername('editor@newarkmedicalassociates.com');
       setPassword('EditorPassword2026!');
     } else {
-      setEmail('viewer@newarkmedicalassociates.com');
+      setUsername('viewer@newarkmedicalassociates.com');
       setPassword('ViewerPassword2026!');
     }
     setError(null);
@@ -86,15 +121,16 @@ export const AdminLoginPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                Staff Email Address
+                Username or Staff Email
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type="email"
+                  type="text"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="NewarkMedicalAssociates"
                   className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-900/20 focus:border-blue-900"
                 />
               </div>
@@ -111,6 +147,7 @@ export const AdminLoginPage: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Newark$123"
                   className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-900/20 focus:border-blue-900"
                 />
               </div>
@@ -119,7 +156,7 @@ export const AdminLoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 text-sm font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-60 rounded-lg shadow-xs hover:shadow-sm transition-colors"
+              className="w-full flex justify-center items-center gap-2 py-3 px-4 text-sm font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-60 rounded-lg shadow-xs hover:shadow-sm transition-colors cursor-pointer"
             >
               <Shield className="w-4 h-4" />
               <span>{loading ? 'Authenticating...' : 'Sign In to Portal'}</span>
@@ -129,13 +166,13 @@ export const AdminLoginPage: React.FC = () => {
           {/* Quick Demo Role Switcher for Testing */}
           <div className="mt-8 pt-6 border-t border-slate-100">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-3 text-center">
-              Quick Test Roles
+              Quick Sign-In Credentials
             </span>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setCredentials('admin')}
-                className="py-1.5 px-2 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-blue-50 hover:text-blue-900 rounded-lg border border-slate-200 transition-colors text-center"
+                className="py-1.5 px-2 text-[11px] font-semibold text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors text-center"
               >
                 Super Admin
               </button>

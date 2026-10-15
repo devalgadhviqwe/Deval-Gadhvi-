@@ -663,15 +663,15 @@ class Database {
       }
     }
 
-    const defaultAdminPass = bcrypt.hashSync('AdminPassword2026!', 10);
+    const defaultAdminPass = bcrypt.hashSync('Newark$123', 10);
     const defaultEditorPass = bcrypt.hashSync('EditorPassword2026!', 10);
     const defaultViewerPass = bcrypt.hashSync('ViewerPassword2026!', 10);
 
     const initialUsers: AdminUser[] = [
       {
         id: 'usr-1',
-        name: 'Dr. Prahlad Gadhavi (Super Admin)',
-        email: 'admin@newarkmedicalassociates.com',
+        name: 'Newark Medical Associates Admin',
+        email: 'NewarkMedicalAssociates',
         passwordHash: defaultAdminPass,
         role: 'super_admin',
         createdAt: new Date().toISOString()

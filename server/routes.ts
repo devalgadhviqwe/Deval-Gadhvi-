@@ -125,19 +125,24 @@ router.post('/public/inquiries', (req: Request, res: Response) => {
    ========================================================================== */
 
 router.post('/auth/login', (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+  const identifier = (req.body.username || req.body.email || '').trim();
+  const password = (req.body.password || '').trim();
+  if (!identifier || !password) {
+    return res.status(400).json({ error: 'Username/Email and password are required' });
   }
 
-  const user = db.findUserByEmail(email);
+  const user = db.findUserByEmail(identifier) ||
+    db.getState().users.find((u) =>
+      u.email.toLowerCase() === identifier.toLowerCase() ||
+      (identifier.toLowerCase() === 'newarkmedicalassociates' && u.role === 'super_admin')
+    );
   if (!user) {
-    return res.status(401).json({ error: 'Invalid email or password' });
+    return res.status(401).json({ error: 'Invalid username or password' });
   }
 
   const isValid = bcrypt.compareSync(password, user.passwordHash);
   if (!isValid) {
-    return res.status(401).json({ error: 'Invalid email or password' });
+    return res.status(401).json({ error: 'Invalid username or password' });
   }
 
   const token = generateToken({

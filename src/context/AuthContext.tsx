@@ -31,11 +31,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           headers: { Authorization: `Bearer ${savedToken}` }
         })
           .then((res) => {
-            if (!res.ok) {
+            if (res.status === 401) {
               logout();
             }
           })
-          .catch(() => {})
+          .catch(() => {
+            // In static deployment mode (Netlify), maintain existing session
+          })
           .finally(() => setIsLoading(false));
       } catch {
         logout();
