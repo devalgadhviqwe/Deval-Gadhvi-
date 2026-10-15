@@ -20,10 +20,10 @@ interface ScrollPopProps extends HTMLMotionProps<'div'> {
 export const ScrollPop: React.FC<ScrollPopProps> = ({
   children,
   delay = 0,
-  initialScale = 0.88,
-  yOffset = 32,
+  initialScale = 0.95,
+  yOffset = 20,
   className = '',
-  amount = 0.15,
+  amount = 'some',
   once = true,
   ...props
 }) => {
@@ -41,14 +41,12 @@ export const ScrollPop: React.FC<ScrollPopProps> = ({
       }}
       viewport={{
         once,
-        amount,
-        margin: '0px 0px -40px 0px'
+        amount: 'some',
+        margin: '100px 0px 100px 0px'
       }}
       transition={{
-        type: 'spring',
-        damping: 22,
-        stiffness: 130,
-        mass: 0.85,
+        duration: 0.45,
+        ease: [0.16, 1, 0.3, 1],
         delay
       }}
       className={className}
