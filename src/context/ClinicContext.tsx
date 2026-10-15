@@ -56,9 +56,16 @@ function mergeOverrides(serverData: BootstrapData, overrides: Record<string, str
   });
 
   const mergedSections = serverData.sections.map((sec) => {
-    const customUrl = overrides[`section_${sec.id}`] || overrides[`section_${sec.sectionKey}`];
-    const customSecUrl = overrides[`section_${sec.id}_secondary`] || overrides[`section_${sec.sectionKey}_secondary`];
-    const customAdditionalRaw = overrides[`section_${sec.id}_additional`] || overrides[`section_${sec.sectionKey}_additional`];
+    const isAboutSec = sec.id === 'sec-about' || sec.id === 'sec-about-intro' || sec.sectionKey === 'about' || sec.sectionKey === 'about_intro';
+    const customUrl = overrides[`section_${sec.id}`]
+      || overrides[`section_${sec.sectionKey}`]
+      || (isAboutSec ? (overrides['section_sec-about-intro'] || overrides['section_sec-about']) : undefined);
+    const customSecUrl = overrides[`section_${sec.id}_secondary`]
+      || overrides[`section_${sec.sectionKey}_secondary`]
+      || (isAboutSec ? (overrides['section_sec-about-intro_secondary'] || overrides['section_sec-about_secondary']) : undefined);
+    const customAdditionalRaw = overrides[`section_${sec.id}_additional`]
+      || overrides[`section_${sec.sectionKey}_additional`]
+      || (isAboutSec ? (overrides['section_sec-about-intro_additional'] || overrides['section_sec-about_additional']) : undefined);
     let customAdditional: string[] | undefined;
     if (customAdditionalRaw) {
       try {
@@ -201,8 +208,23 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             ? `${targetType}_${targetId}_secondary`
             : `${targetType}_${targetId}`);
       overrides[key] = imageUrl;
+
+      // Also mirror if about section
+      const isAboutGallery = targetId === 'sec-about-intro' || targetId === 'sec-about' || targetId === 'about_intro' || targetId === 'about';
+      if (isAboutGallery) {
+        const altId = targetId.includes('intro') ? 'sec-about' : 'sec-about-intro';
+        const altKey = imageField === 'secondaryImageUrl'
+          ? `section_${altId}_secondary`
+          : `section_${altId}`;
+        overrides[altKey] = imageUrl;
+      }
+
       if (additionalImages && additionalImages.length > 0) {
         overrides[`${targetType}_${targetId}_additional`] = JSON.stringify(additionalImages);
+        if (isAboutGallery) {
+          overrides['section_sec-about-intro_additional'] = JSON.stringify(additionalImages);
+          overrides['section_sec-about_additional'] = JSON.stringify(additionalImages);
+        }
       }
       try {
         localStorage.setItem('nma_custom_images_overrides', JSON.stringify(overrides));
@@ -239,11 +261,15 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return { ...prev, services: updatedServices };
       }
       if (targetType === 'section') {
+        const isAboutGallery = targetId === 'sec-about-intro' || targetId === 'sec-about' || targetId === 'about_intro' || targetId === 'about';
         const exists = prev.sections.some((s) => s.id === targetId || s.sectionKey === targetId);
         let updatedSections: SectionContent[];
-        if (exists) {
+        if (exists || isAboutGallery) {
           updatedSections = prev.sections.map((s) => {
-            if (s.id === targetId || s.sectionKey === targetId) {
+            const matches = isAboutGallery
+              ? (s.id === 'sec-about-intro' || s.id === 'sec-about' || s.sectionKey === 'about_intro' || s.sectionKey === 'about')
+              : (s.id === targetId || s.sectionKey === targetId);
+            if (matches) {
               return {
                 ...s,
                 imageUrl: imageField === 'secondaryImageUrl' ? s.imageUrl : imageUrl,

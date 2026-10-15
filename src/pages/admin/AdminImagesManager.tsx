@@ -287,6 +287,116 @@ export const AdminImagesManager: React.FC = () => {
     imageUrl: '/src/assets/images/vision_consultation_warm_1791534815659.jpg'
   };
 
+  // Unified 3-Image Gallery ("About Us / Vision for a Healthier and Brighter Tomorrow")
+  const gallery1 = aboutIntroSec.additionalImages?.[0]
+    || aboutSec.additionalImages?.[0]
+    || (aboutIntroSec.imageUrl && !aboutIntroSec.imageUrl.includes('nma_about_clinic') ? aboutIntroSec.imageUrl : undefined)
+    || '/src/assets/images/gallery_screening_1_1791534688866.jpg';
+  const gallery2 = aboutIntroSec.additionalImages?.[1]
+    || aboutSec.additionalImages?.[1]
+    || aboutIntroSec.secondaryImageUrl
+    || '/src/assets/images/gallery_screening_2_1791534700033.jpg';
+  const gallery3 = aboutIntroSec.additionalImages?.[2]
+    || aboutSec.additionalImages?.[2]
+    || '/src/assets/images/gallery_screening_3_1791534712268.jpg';
+
+  const updateGalleryImage = async (index: 0 | 1 | 2, newUrl: string) => {
+    const cur = [gallery1, gallery2, gallery3];
+    const updated = [...cur];
+    updated[index] = newUrl;
+    await setCustomImage(
+      'section',
+      'sec-about-intro',
+      index === 0 ? newUrl : updated[0],
+      index === 1 ? 'secondaryImageUrl' : 'imageUrl',
+      updated
+    );
+    await setCustomImage(
+      'section',
+      'sec-about',
+      index === 0 ? newUrl : updated[0],
+      index === 1 ? 'secondaryImageUrl' : 'imageUrl',
+      updated
+    );
+    showSuccess(`Updated About Us Gallery Image ${index + 1}!`);
+  };
+
+  const renderGalleryCards = (scope: 'Home' | 'About') => (
+    <>
+      {/* Gallery Image 1: Screening Consultation (Left) */}
+      <ImageItemCard
+        title="About Us Gallery: Image 1 - Screening Consultation"
+        subtitle="Left card in the 3-image gallery showing medical professionals and patients consulting."
+        locationLabel={`${scope}: Gallery Card 1 (Left)`}
+        currentUrl={gallery1}
+        defaultFallbackUrl="/src/assets/images/gallery_screening_1_1791534688866.jpg"
+        aspectRatioLabel="Vertical (3:4)"
+        uploading={uploadingTarget === `gallery_0_${scope}`}
+        onDirectUpload={async (file) => {
+          try {
+            setUploadingTarget(`gallery_0_${scope}`);
+            const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+            await updateGalleryImage(0, asset.url);
+          } catch (err: any) {
+            showError(err?.message || 'Upload failed');
+          } finally {
+            setUploadingTarget(null);
+          }
+        }}
+        onSelectImage={(newUrl) => updateGalleryImage(0, newUrl)}
+        onResetToDefault={() => updateGalleryImage(0, '/src/assets/images/gallery_screening_1_1791534688866.jpg')}
+      />
+
+      {/* Gallery Image 2: Diagnostic Exam (Center) */}
+      <ImageItemCard
+        title="About Us Gallery: Image 2 - Diagnostic Exam / Swab"
+        subtitle="Center card in the 3-image gallery showing healthcare clinician performing patient test."
+        locationLabel={`${scope}: Gallery Card 2 (Center)`}
+        currentUrl={gallery2}
+        defaultFallbackUrl="/src/assets/images/gallery_screening_2_1791534700033.jpg"
+        aspectRatioLabel="Vertical (3:4)"
+        uploading={uploadingTarget === `gallery_1_${scope}`}
+        onDirectUpload={async (file) => {
+          try {
+            setUploadingTarget(`gallery_1_${scope}`);
+            const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+            await updateGalleryImage(1, asset.url);
+          } catch (err: any) {
+            showError(err?.message || 'Upload failed');
+          } finally {
+            setUploadingTarget(null);
+          }
+        }}
+        onSelectImage={(newUrl) => updateGalleryImage(1, newUrl)}
+        onResetToDefault={() => updateGalleryImage(1, '/src/assets/images/gallery_screening_2_1791534700033.jpg')}
+      />
+
+      {/* Gallery Image 3: Community Health Outreach (Right) */}
+      <ImageItemCard
+        title="About Us Gallery: Image 3 - Community Outreach"
+        subtitle="Right card in the 3-image gallery showing community wellness outreach pavilion."
+        locationLabel={`${scope}: Gallery Card 3 (Right)`}
+        currentUrl={gallery3}
+        defaultFallbackUrl="/src/assets/images/gallery_screening_3_1791534712268.jpg"
+        aspectRatioLabel="Vertical (3:4)"
+        uploading={uploadingTarget === `gallery_2_${scope}`}
+        onDirectUpload={async (file) => {
+          try {
+            setUploadingTarget(`gallery_2_${scope}`);
+            const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+            await updateGalleryImage(2, asset.url);
+          } catch (err: any) {
+            showError(err?.message || 'Upload failed');
+          } finally {
+            setUploadingTarget(null);
+          }
+        }}
+        onSelectImage={(newUrl) => updateGalleryImage(2, newUrl)}
+        onResetToDefault={() => updateGalleryImage(2, '/src/assets/images/gallery_screening_3_1791534712268.jpg')}
+      />
+    </>
+  );
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -332,7 +442,7 @@ export const AdminImagesManager: React.FC = () => {
       <div className="border-b border-slate-200">
         <nav className="flex space-x-2 sm:space-x-8 overflow-x-auto pb-px">
           {[
-            { id: 'home', label: 'Home Page', icon: Home, count: 8 },
+            { id: 'home', label: 'Home Page', icon: Home, count: 10 },
             { id: 'about', label: 'About Page', icon: Info, count: 6 },
             { id: 'services', label: 'Services', icon: Stethoscope, count: services.length },
             { id: 'providers', label: 'Providers / Doctors', icon: Users, count: doctors.length },
@@ -399,19 +509,8 @@ export const AdminImagesManager: React.FC = () => {
               onResetToDefault={() => handleSelectImage('section', 'sec-services', '/src/assets/images/nma_about_clinic_1791527274487.jpg')}
             />
 
-            {/* 3. About Us Preview Banner */}
-            <ImageItemCard
-              title="About Clinic Preview"
-              subtitle="Reception and consultation clinic visual displayed on the homepage preview block."
-              locationLabel="Home: About Preview"
-              currentUrl={aboutSec.imageUrl || '/src/assets/images/nma_about_clinic_1791527274487.jpg'}
-              defaultFallbackUrl="/src/assets/images/nma_about_clinic_1791527274487.jpg"
-              aspectRatioLabel="Landscape (16:9)"
-              uploading={uploadingTarget === 'section_sec-about_primary'}
-              onDirectUpload={(file) => handleDirectUpload('section', 'sec-about', file)}
-              onSelectImage={(newUrl) => handleSelectImage('section', 'sec-about', newUrl)}
-              onResetToDefault={() => handleSelectImage('section', 'sec-about', '/src/assets/images/nma_about_clinic_1791527274487.jpg')}
-            />
+            {/* 3, 4, 5. About Us 3-Image Gallery (Screening, Diagnostic Swab, Community Outreach) */}
+            {renderGalleryCards('Home')}
 
             {/* 4. Diagnostics Laboratory */}
             <ImageItemCard
@@ -561,134 +660,8 @@ export const AdminImagesManager: React.FC = () => {
       {activeTab === 'about' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Gallery 1: Screening */}
-            <ImageItemCard
-              title="Intro Gallery 1: Screening Consultation"
-              subtitle="First card in the 3-image gallery showing healthcare professionals interacting with patients."
-              locationLabel="About: Gallery Card 1"
-              currentUrl={aboutIntroSec.additionalImages?.[0] || aboutIntroSec.imageUrl || '/src/assets/images/gallery_screening_1_1791534688866.jpg'}
-              defaultFallbackUrl="/src/assets/images/gallery_screening_1_1791534688866.jpg"
-              aspectRatioLabel="Vertical (3:4)"
-              uploading={uploadingTarget === 'section_sec-about-intro_primary'}
-              onDirectUpload={async (file) => {
-                try {
-                  setUploadingTarget('section_sec-about-intro_primary');
-                  const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
-                  const currentImgs = aboutIntroSec.additionalImages || [
-                    '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                    '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                    '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                  ];
-                  const updated = [asset.url, currentImgs[1], currentImgs[2]];
-                  await setCustomImage('section', 'sec-about-intro', asset.url, 'imageUrl', updated);
-                  showSuccess('Updated Gallery Image 1!');
-                } catch (err: any) {
-                  showError(err?.message || 'Upload failed');
-                } finally {
-                  setUploadingTarget(null);
-                }
-              }}
-              onSelectImage={async (newUrl) => {
-                const currentImgs = aboutIntroSec.additionalImages || [
-                  '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                  '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                  '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                ];
-                const updated = [newUrl, currentImgs[1], currentImgs[2]];
-                await setCustomImage('section', 'sec-about-intro', newUrl, 'imageUrl', updated);
-              }}
-              onResetToDefault={async () => {
-                const currentImgs = aboutIntroSec.additionalImages || [];
-                const updated = ['/src/assets/images/gallery_screening_1_1791534688866.jpg', currentImgs[1], currentImgs[2]];
-                await setCustomImage('section', 'sec-about-intro', '/src/assets/images/gallery_screening_1_1791534688866.jpg', 'imageUrl', updated);
-              }}
-            />
-
-            {/* Gallery 2: Diagnostic Exam */}
-            <ImageItemCard
-              title="Intro Gallery 2: Diagnostic Exam"
-              subtitle="Second card in the 3-image gallery showing medical professional performing clinical test."
-              locationLabel="About: Gallery Card 2"
-              currentUrl={aboutIntroSec.additionalImages?.[1] || aboutIntroSec.secondaryImageUrl || '/src/assets/images/gallery_screening_2_1791534700033.jpg'}
-              defaultFallbackUrl="/src/assets/images/gallery_screening_2_1791534700033.jpg"
-              aspectRatioLabel="Vertical (3:4)"
-              uploading={uploadingTarget === 'section_sec-about-intro_secondaryImageUrl'}
-              onDirectUpload={async (file) => {
-                try {
-                  setUploadingTarget('section_sec-about-intro_secondaryImageUrl');
-                  const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
-                  const currentImgs = aboutIntroSec.additionalImages || [
-                    '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                    '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                    '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                  ];
-                  const updated = [currentImgs[0], asset.url, currentImgs[2]];
-                  await setCustomImage('section', 'sec-about-intro', asset.url, 'secondaryImageUrl', updated);
-                  showSuccess('Updated Gallery Image 2!');
-                } catch (err: any) {
-                  showError(err?.message || 'Upload failed');
-                } finally {
-                  setUploadingTarget(null);
-                }
-              }}
-              onSelectImage={async (newUrl) => {
-                const currentImgs = aboutIntroSec.additionalImages || [
-                  '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                  '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                  '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                ];
-                const updated = [currentImgs[0], newUrl, currentImgs[2]];
-                await setCustomImage('section', 'sec-about-intro', newUrl, 'secondaryImageUrl', updated);
-              }}
-              onResetToDefault={async () => {
-                const currentImgs = aboutIntroSec.additionalImages || [];
-                const updated = [currentImgs[0], '/src/assets/images/gallery_screening_2_1791534700033.jpg', currentImgs[2]];
-                await setCustomImage('section', 'sec-about-intro', '/src/assets/images/gallery_screening_2_1791534700033.jpg', 'secondaryImageUrl', updated);
-              }}
-            />
-
-            {/* Gallery 3: Community Health Outreach */}
-            <ImageItemCard
-              title="Intro Gallery 3: Community Outreach"
-              subtitle="Third card in the 3-image gallery showing medical professionals and community screening."
-              locationLabel="About: Gallery Card 3"
-              currentUrl={aboutIntroSec.additionalImages?.[2] || '/src/assets/images/gallery_screening_3_1791534712268.jpg'}
-              defaultFallbackUrl="/src/assets/images/gallery_screening_3_1791534712268.jpg"
-              aspectRatioLabel="Vertical (3:4)"
-              uploading={uploadingTarget === 'section_sec-about-intro_img3'}
-              onDirectUpload={async (file) => {
-                try {
-                  setUploadingTarget('section_sec-about-intro_img3');
-                  const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
-                  const currentImgs = aboutIntroSec.additionalImages || [
-                    '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                    '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                    '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                  ];
-                  const updated = [currentImgs[0], currentImgs[1], asset.url];
-                  await setCustomImage('section', 'sec-about-intro', currentImgs[0], 'imageUrl', updated);
-                  showSuccess('Updated Gallery Image 3!');
-                } catch (err: any) {
-                  showError(err?.message || 'Upload failed');
-                } finally {
-                  setUploadingTarget(null);
-                }
-              }}
-              onSelectImage={async (newUrl) => {
-                const currentImgs = aboutIntroSec.additionalImages || [
-                  '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                  '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                  '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                ];
-                const updated = [currentImgs[0], currentImgs[1], newUrl];
-                await setCustomImage('section', 'sec-about-intro', currentImgs[0], 'imageUrl', updated);
-              }}
-              onResetToDefault={async () => {
-                const currentImgs = aboutIntroSec.additionalImages || [];
-                const updated = [currentImgs[0], currentImgs[1], '/src/assets/images/gallery_screening_3_1791534712268.jpg'];
-                await setCustomImage('section', 'sec-about-intro', currentImgs[0], 'imageUrl', updated);
-              }}
-            />
+            {/* 1, 2, 3. About Us 3-Image Gallery (Screening, Diagnostic Swab, Community Outreach) */}
+            {renderGalleryCards('About')}
 
             {/* Mission: Doctor Main Capsule */}
             <ImageItemCard

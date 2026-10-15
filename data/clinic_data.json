@@ -758,7 +758,13 @@
       "bodyText": "Newark Medical Associates is rooted in community trust and clinical excellence. We provide compassionate, high-quality care focused on prevention, early detection, and patient comfort in a professional, nonjudgmental environment.",
       "primaryButtonLabel": "Learn More About Us",
       "primaryButtonUrl": "/about-us",
-      "imageUrl": "/src/assets/images/nma_about_clinic_1791527274487.jpg",
+      "imageUrl": "/src/assets/images/gallery_screening_1_1791534688866.jpg",
+      "secondaryImageUrl": "/src/assets/images/gallery_screening_2_1791534700033.jpg",
+      "additionalImages": [
+        "/src/assets/images/gallery_screening_1_1791534688866.jpg",
+        "/src/assets/images/gallery_screening_2_1791534700033.jpg",
+        "/src/assets/images/gallery_screening_3_1791534712268.jpg"
+      ],
       "isVisible": true,
       "displayOrder": 3,
       "updatedAt": "2026-10-09T06:54:12.765Z"

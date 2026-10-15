@@ -7,11 +7,25 @@ import { ScrollPop } from './ScrollPop';
 // SECTION 1: ABOUT US INTRODUCTION (REFERENCE IMAGE 1)
 export const AboutIntroSection: React.FC = () => {
   const { sections } = useClinic();
-  const aboutSec = sections.find((s) => s.sectionKey === 'about' || s.sectionKey === 'about_intro');
+  const introSec = sections.find((s) => s.id === 'sec-about-intro' || s.sectionKey === 'about_intro');
+  const homeAboutSec = sections.find((s) => s.id === 'sec-about' || s.sectionKey === 'about');
+  const aboutSec = introSec || homeAboutSec;
 
-  const img1 = aboutSec?.additionalImages?.[0] || aboutSec?.imageUrl || '/src/assets/images/gallery_screening_1_1791534688866.jpg';
-  const img2 = aboutSec?.additionalImages?.[1] || aboutSec?.secondaryImageUrl || '/src/assets/images/gallery_screening_2_1791534700033.jpg';
-  const img3 = aboutSec?.additionalImages?.[2] || '/src/assets/images/gallery_screening_3_1791534712268.jpg';
+  const img1 = introSec?.additionalImages?.[0]
+    || homeAboutSec?.additionalImages?.[0]
+    || (introSec?.imageUrl && !introSec.imageUrl.includes('nma_about_clinic') ? introSec.imageUrl : undefined)
+    || (homeAboutSec?.imageUrl && !homeAboutSec.imageUrl.includes('nma_about_clinic') ? homeAboutSec.imageUrl : undefined)
+    || '/src/assets/images/gallery_screening_1_1791534688866.jpg';
+
+  const img2 = introSec?.additionalImages?.[1]
+    || homeAboutSec?.additionalImages?.[1]
+    || introSec?.secondaryImageUrl
+    || homeAboutSec?.secondaryImageUrl
+    || '/src/assets/images/gallery_screening_2_1791534700033.jpg';
+
+  const img3 = introSec?.additionalImages?.[2]
+    || homeAboutSec?.additionalImages?.[2]
+    || '/src/assets/images/gallery_screening_3_1791534712268.jpg';
 
   return (
     <section className="bg-white py-16 lg:py-24">
