@@ -3,6 +3,8 @@ import { X, Upload, Check, Image as ImageIcon, Search } from 'lucide-react';
 import { MediaAsset } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 
+import { uploadImageUnified, fetchMediaListUnified } from '../../utils/mediaUpload';
+
 interface MediaPickerModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -29,20 +31,15 @@ export const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setSelectedUrl(currentImage || '');
-      fetchMedia();
+      loadMedia();
     }
   }, [isOpen, currentImage]);
 
-  const fetchMedia = async () => {
+  const loadMedia = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/media', {
-        headers: getAuthHeaders()
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setMediaList(data);
-      }
+      const list = await fetchMediaListUnified(getAuthHeaders());
+      setMediaList(list);
     } catch (err) {
       console.error('Failed to load media:', err);
     } finally {
@@ -56,31 +53,16 @@ export const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
 
     try {
       setUploading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('category', categoryFilter || 'general');
-      formData.append('alt', file.name.replace(/\.[^/.]+$/, ''));
-
-      const res = await fetch('/api/admin/media/upload', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: formData
-      });
-
-      if (res.ok) {
-        const newAsset = await res.json();
-        setMediaList([newAsset, ...mediaList]);
-        setSelectedUrl(newAsset.url);
-        setSelectedAlt(newAsset.alt);
-      } else {
-        const data = await res.json().catch(() => null);
-        const errorMsg = data?.error || 'Image upload failed. Please ensure the file is a valid image under 25MB.';
-        alert(errorMsg);
-      }
-    } catch (err) {
+      const newAsset = await uploadImageUnified(file, categoryFilter || 'general', getAuthHeaders());
+      setMediaList((prev) => [newAsset, ...prev.filter((m) => m.id !== newAsset.id)]);
+      setSelectedUrl(newAsset.url);
+      setSelectedAlt(newAsset.alt);
+    } catch (err: any) {
       console.error('Upload error:', err);
+      alert(err.message || 'Image upload failed. Please try a different image.');
     } finally {
       setUploading(false);
+      e.target.value = '';
     }
   };
 

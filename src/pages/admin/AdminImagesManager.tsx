@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useClinic } from '../../context/ClinicContext';
 import { MediaPickerModal } from '../../components/admin/MediaPickerModal';
+import { uploadImageUnified } from '../../utils/mediaUpload';
 
 type ActiveTab = 'home' | 'about' | 'services' | 'providers' | 'branding';
 
@@ -203,23 +204,9 @@ export const AdminImagesManager: React.FC = () => {
 
     try {
       setUploadingTarget(`${targetType}_${targetId}_${imageField || 'primary'}`);
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('category', targetType === 'doctor' ? 'doctors' : targetType === 'service' ? 'services' : 'general');
-      formData.append('alt', file.name);
+      const category = targetType === 'doctor' ? 'doctors' : targetType === 'service' ? 'services' : 'general';
+      const newAsset = await uploadImageUnified(file, category, getAuthHeaders());
 
-      const res = await fetch('/api/admin/media/upload', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: formData
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.error || 'Failed to upload image file');
-      }
-
-      const newAsset = await res.json();
       await setCustomImage(targetType, targetId, newAsset.url, imageField, additionalImages);
       await refreshData();
       showSuccess(`Successfully uploaded and set new image for ${targetId}!`);
@@ -470,22 +457,22 @@ export const AdminImagesManager: React.FC = () => {
               aspectRatioLabel="Vertical (3:4)"
               uploading={uploadingTarget === 'section_sec-about-intro_primary'}
               onDirectUpload={async (file) => {
-                const currentImgs = aboutIntroSec.additionalImages || [
-                  '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                  '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                  '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                ];
-                // upload file
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('category', 'general');
-                const res = await fetch('/api/admin/media/upload', { method: 'POST', headers: getAuthHeaders(), body: formData });
-                if (res.ok) {
-                  const asset = await res.json();
+                try {
+                  setUploadingTarget('section_sec-about-intro_primary');
+                  const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+                  const currentImgs = aboutIntroSec.additionalImages || [
+                    '/src/assets/images/gallery_screening_1_1791534688866.jpg',
+                    '/src/assets/images/gallery_screening_2_1791534700033.jpg',
+                    '/src/assets/images/gallery_screening_3_1791534712268.jpg'
+                  ];
                   const updated = [asset.url, currentImgs[1], currentImgs[2]];
                   await setCustomImage('section', 'sec-about-intro', asset.url, 'imageUrl', updated);
                   await refreshData();
                   showSuccess('Updated Gallery Image 1!');
+                } catch (err: any) {
+                  showError(err?.message || 'Upload failed');
+                } finally {
+                  setUploadingTarget(null);
                 }
               }}
               onSelectImage={async (newUrl) => {
@@ -516,21 +503,22 @@ export const AdminImagesManager: React.FC = () => {
               aspectRatioLabel="Vertical (3:4)"
               uploading={uploadingTarget === 'section_sec-about-intro_secondaryImageUrl'}
               onDirectUpload={async (file) => {
-                const currentImgs = aboutIntroSec.additionalImages || [
-                  '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                  '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                  '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                ];
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('category', 'general');
-                const res = await fetch('/api/admin/media/upload', { method: 'POST', headers: getAuthHeaders(), body: formData });
-                if (res.ok) {
-                  const asset = await res.json();
+                try {
+                  setUploadingTarget('section_sec-about-intro_secondaryImageUrl');
+                  const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+                  const currentImgs = aboutIntroSec.additionalImages || [
+                    '/src/assets/images/gallery_screening_1_1791534688866.jpg',
+                    '/src/assets/images/gallery_screening_2_1791534700033.jpg',
+                    '/src/assets/images/gallery_screening_3_1791534712268.jpg'
+                  ];
                   const updated = [currentImgs[0], asset.url, currentImgs[2]];
                   await setCustomImage('section', 'sec-about-intro', asset.url, 'secondaryImageUrl', updated);
                   await refreshData();
                   showSuccess('Updated Gallery Image 2!');
+                } catch (err: any) {
+                  showError(err?.message || 'Upload failed');
+                } finally {
+                  setUploadingTarget(null);
                 }
               }}
               onSelectImage={async (newUrl) => {
@@ -561,21 +549,22 @@ export const AdminImagesManager: React.FC = () => {
               aspectRatioLabel="Vertical (3:4)"
               uploading={uploadingTarget === 'section_sec-about-intro_img3'}
               onDirectUpload={async (file) => {
-                const currentImgs = aboutIntroSec.additionalImages || [
-                  '/src/assets/images/gallery_screening_1_1791534688866.jpg',
-                  '/src/assets/images/gallery_screening_2_1791534700033.jpg',
-                  '/src/assets/images/gallery_screening_3_1791534712268.jpg'
-                ];
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('category', 'general');
-                const res = await fetch('/api/admin/media/upload', { method: 'POST', headers: getAuthHeaders(), body: formData });
-                if (res.ok) {
-                  const asset = await res.json();
+                try {
+                  setUploadingTarget('section_sec-about-intro_img3');
+                  const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
+                  const currentImgs = aboutIntroSec.additionalImages || [
+                    '/src/assets/images/gallery_screening_1_1791534688866.jpg',
+                    '/src/assets/images/gallery_screening_2_1791534700033.jpg',
+                    '/src/assets/images/gallery_screening_3_1791534712268.jpg'
+                  ];
                   const updated = [currentImgs[0], currentImgs[1], asset.url];
                   await setCustomImage('section', 'sec-about-intro', currentImgs[0], 'imageUrl', updated);
                   await refreshData();
                   showSuccess('Updated Gallery Image 3!');
+                } catch (err: any) {
+                  showError(err?.message || 'Upload failed');
+                } finally {
+                  setUploadingTarget(null);
                 }
               }}
               onSelectImage={async (newUrl) => {

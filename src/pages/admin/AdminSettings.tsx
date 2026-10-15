@@ -18,6 +18,7 @@ import {
 import { GlobalSettings } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { useClinic } from '../../context/ClinicContext';
+import { uploadImageUnified } from '../../utils/mediaUpload';
 import { MediaPickerModal } from '../../components/admin/MediaPickerModal';
 
 export const AdminSettings: React.FC = () => {
@@ -70,23 +71,8 @@ export const AdminSettings: React.FC = () => {
     try {
       setUploadingLogo(true);
       setErrorMsg(null);
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('category', 'general');
-      formData.append('alt', `${settings.practiceName || 'Practice'} Logo`);
 
-      const res = await fetch('/api/admin/media/upload', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: formData
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.error || 'Failed to upload logo file');
-      }
-
-      const asset = await res.json();
+      const asset = await uploadImageUnified(file, 'general', getAuthHeaders());
       setSettings((prev) => prev ? { ...prev, [field]: asset.url } : prev);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);

@@ -15,6 +15,8 @@ import { MediaAsset } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { useClinic } from '../../context/ClinicContext';
 
+import { uploadImageUnified, fetchMediaListUnified, removeLocalMediaAsset } from '../../utils/mediaUpload';
+
 export const AdminMediaLibrary: React.FC = () => {
   const { getAuthHeaders, hasRole } = useAuth();
   const { doctors, services, sections } = useClinic();
@@ -34,13 +36,8 @@ export const AdminMediaLibrary: React.FC = () => {
   const fetchMedia = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/media', {
-        headers: getAuthHeaders()
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setMedia(data);
-      }
+      const list = await fetchMediaListUnified(getAuthHeaders());
+      setMedia(list);
     } catch (err) {
       console.error('Error fetching media:', err);
     } finally {
@@ -51,26 +48,12 @@ export const AdminMediaLibrary: React.FC = () => {
   const uploadFile = async (file: File) => {
     try {
       setUploading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('category', selectedCategory === 'all' ? 'general' : selectedCategory);
-      formData.append('alt', file.name.replace(/\.[^/.]+$/, ''));
-
-      const res = await fetch('/api/admin/media/upload', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: formData
-      });
-
-      if (res.ok) {
-        await fetchMedia();
-      } else {
-        const data = await res.json().catch(() => null);
-        const errorMsg = data?.error || 'File upload failed. Please ensure the file is a valid image under 25MB.';
-        alert(errorMsg);
-      }
-    } catch (err) {
+      const category = selectedCategory === 'all' ? 'general' : selectedCategory;
+      const newAsset = await uploadImageUnified(file, category, getAuthHeaders());
+      setMedia((prev) => [newAsset, ...prev.filter((m) => m.id !== newAsset.id)]);
+    } catch (err: any) {
       console.error('Upload failed:', err);
+      alert(err.message || 'File upload failed. Please ensure the file is an image.');
     } finally {
       setUploading(false);
     }
@@ -113,13 +96,12 @@ export const AdminMediaLibrary: React.FC = () => {
     }
 
     try {
-      const res = await fetch(`/api/admin/media/${item.id}`, {
+      removeLocalMediaAsset(item.id);
+      await fetch(`/api/admin/media/${item.id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
-      });
-      if (res.ok) {
-        await fetchMedia();
-      }
+      }).catch(() => {});
+      setMedia((prev) => prev.filter((m) => m.id !== item.id));
     } catch (err) {
       console.error('Delete error:', err);
     }
