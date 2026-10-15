@@ -14,6 +14,7 @@ import {
   ShieldAlert
 } from 'lucide-react';
 import { useClinic } from '../../context/ClinicContext';
+import { useAuth } from '../../context/AuthContext';
 import defaultClinicData from '../../../data/clinic_data.json';
 
 interface StatsData {
@@ -56,7 +57,7 @@ export const AdminDashboard: React.FC = () => {
       totalServices: srvs.length,
       activeServices: srvs.filter((s) => s.active).length,
       totalDiagnostics: diags.length,
-      totalMedia: 14,
+      totalMedia: 24,
       totalInquiries: savedInquiries.length,
       unreadInquiries: savedInquiries.filter((i) => i.status === 'new').length,
       recentInquiries: savedInquiries.slice(0, 5),
@@ -80,7 +81,12 @@ export const AdminDashboard: React.FC = () => {
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const data = await res.json();
-          setStats(data);
+          setStats((prev) => ({
+            ...prev,
+            ...data,
+            recentInquiries: data.recentInquiries?.length ? data.recentInquiries : prev.recentInquiries,
+            recentAudits: data.recentAudits?.length ? data.recentAudits : prev.recentAudits
+          }));
           return;
         }
       }

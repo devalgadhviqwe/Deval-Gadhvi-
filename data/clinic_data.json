@@ -849,6 +849,47 @@
       "updatedAt": "2026-10-15T03:03:53.089Z"
     }
   ],
+  "contactSubmissions": [
+    {
+      "id": "inq-1",
+      "fullName": "Eleanor Vance",
+      "email": "e.vance@gmail.com",
+      "phone": "(973) 555-0142",
+      "preferredService": "Primary Care & Annual Physicals",
+      "preferredDoctor": "Dr. Prahlad Gadhavi",
+      "preferredDate": "2026-10-20",
+      "message": "Requesting a routine annual physical checkup and comprehensive metabolic bloodwork review.",
+      "status": "new",
+      "submittedAt": "2026-10-14T09:30:00.000Z",
+      "adminNotes": "Followed up via SMS confirming 10:30 AM arrival."
+    },
+    {
+      "id": "inq-2",
+      "fullName": "Marcus Sterling",
+      "email": "marcus.sterling@outlook.com",
+      "phone": "(973) 555-0189",
+      "preferredService": "Cardiology & Heart Health",
+      "preferredDoctor": "Dr. Deval Gadhvi",
+      "preferredDate": "2026-10-18",
+      "message": "Need follow-up consultation regarding recent echocardiogram results and blood pressure regulation.",
+      "status": "in_progress",
+      "submittedAt": "2026-10-13T14:15:00.000Z",
+      "adminNotes": "Dr. Deval Gadhvi reviewed test charts; scheduling in-office consultation."
+    },
+    {
+      "id": "inq-3",
+      "fullName": "Sofia Ramos",
+      "email": "sofia.r@yahoo.com",
+      "phone": "(201) 555-0123",
+      "preferredService": "Physical Therapy & Rehabilitation",
+      "preferredDoctor": "Dr. Sankalp Pathak",
+      "preferredDate": "2026-10-16",
+      "message": "Post-knee rehabilitation evaluation request following orthopedic surgery last month.",
+      "status": "resolved",
+      "submittedAt": "2026-10-12T11:00:00.000Z",
+      "adminNotes": "Initial physical therapy session completed. Home exercise regimen provided."
+    }
+  ],
   "auditLogs": [
     {
       "id": "log-1792036084499-9i50",
