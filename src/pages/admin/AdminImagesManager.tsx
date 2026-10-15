@@ -397,6 +397,52 @@ export const AdminImagesManager: React.FC = () => {
     </>
   );
 
+  const renderMissionAndVisionCards = (scope: 'Home' | 'About') => (
+    <>
+      {/* Mission: Doctor Main Capsule */}
+      <ImageItemCard
+        title="Our Mission: Lead Clinician Capsule"
+        subtitle="Tall rounded pill-capsule portrait visual representing healthcare excellence."
+        locationLabel={`${scope}: Mission Pill 1`}
+        currentUrl={aboutMissionSec.imageUrl || '/src/assets/images/mission_doctor_capsule_1791534727327.jpg'}
+        defaultFallbackUrl="/src/assets/images/mission_doctor_capsule_1791534727327.jpg"
+        aspectRatioLabel="Capsule (Pill)"
+        uploading={uploadingTarget === `section_sec-about-mission_primary_${scope}`}
+        onDirectUpload={(file) => handleDirectUpload('section', 'sec-about-mission', file, 'imageUrl')}
+        onSelectImage={(newUrl) => handleSelectImage('section', 'sec-about-mission', newUrl, 'imageUrl')}
+        onResetToDefault={() => handleSelectImage('section', 'sec-about-mission', '/src/assets/images/mission_doctor_capsule_1791534727327.jpg', 'imageUrl')}
+      />
+
+      {/* Mission: Blood Pressure Capsule */}
+      <ImageItemCard
+        title="Our Mission: Blood Pressure Capsule"
+        subtitle="Overlapping rounded bottom capsule visual showing diagnostic blood pressure monitoring."
+        locationLabel={`${scope}: Mission Pill 2`}
+        currentUrl={aboutMissionSec.secondaryImageUrl || '/src/assets/images/mission_blood_pressure_1791534804414.jpg'}
+        defaultFallbackUrl="/src/assets/images/mission_blood_pressure_1791534804414.jpg"
+        aspectRatioLabel="Capsule (Small Pill)"
+        uploading={uploadingTarget === `section_sec-about-mission_secondaryImageUrl_${scope}`}
+        onDirectUpload={(file) => handleDirectUpload('section', 'sec-about-mission', file, 'secondaryImageUrl')}
+        onSelectImage={(newUrl) => handleSelectImage('section', 'sec-about-mission', newUrl, 'secondaryImageUrl')}
+        onResetToDefault={() => handleSelectImage('section', 'sec-about-mission', '/src/assets/images/mission_blood_pressure_1791534804414.jpg', 'secondaryImageUrl')}
+      />
+
+      {/* Vision: Consultation Image */}
+      <ImageItemCard
+        title="Our Vision: Patient Consultation"
+        subtitle="Warm clinical consultation visual displayed in the rounded right column of Our Vision section."
+        locationLabel={`${scope}: Vision Visual`}
+        currentUrl={aboutVisionSec.imageUrl || '/src/assets/images/vision_consultation_warm_1791534815659.jpg'}
+        defaultFallbackUrl="/src/assets/images/vision_consultation_warm_1791534815659.jpg"
+        aspectRatioLabel="Landscape / Curved"
+        uploading={uploadingTarget === `section_sec-about-vision_primary_${scope}`}
+        onDirectUpload={(file) => handleDirectUpload('section', 'sec-about-vision', file, 'imageUrl')}
+        onSelectImage={(newUrl) => handleSelectImage('section', 'sec-about-vision', newUrl, 'imageUrl')}
+        onResetToDefault={() => handleSelectImage('section', 'sec-about-vision', '/src/assets/images/vision_consultation_warm_1791534815659.jpg', 'imageUrl')}
+      />
+    </>
+  );
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -442,7 +488,7 @@ export const AdminImagesManager: React.FC = () => {
       <div className="border-b border-slate-200">
         <nav className="flex space-x-2 sm:space-x-8 overflow-x-auto pb-px">
           {[
-            { id: 'home', label: 'Home Page', icon: Home, count: 10 },
+            { id: 'home', label: 'Home Page', icon: Home, count: 13 },
             { id: 'about', label: 'About Page', icon: Info, count: 6 },
             { id: 'services', label: 'Services', icon: Stethoscope, count: services.length },
             { id: 'providers', label: 'Providers / Doctors', icon: Users, count: doctors.length },
@@ -511,6 +557,9 @@ export const AdminImagesManager: React.FC = () => {
 
             {/* 3, 4, 5. About Us 3-Image Gallery (Screening, Diagnostic Swab, Community Outreach) */}
             {renderGalleryCards('Home')}
+
+            {/* 6, 7, 8. Mission & Vision Sections (Lead Clinician, Blood Pressure, Patient Consultation) */}
+            {renderMissionAndVisionCards('Home')}
 
             {/* 4. Diagnostics Laboratory */}
             <ImageItemCard
@@ -663,47 +712,8 @@ export const AdminImagesManager: React.FC = () => {
             {/* 1, 2, 3. About Us 3-Image Gallery (Screening, Diagnostic Swab, Community Outreach) */}
             {renderGalleryCards('About')}
 
-            {/* Mission: Doctor Main Capsule */}
-            <ImageItemCard
-              title="Our Mission: Lead Clinician Capsule"
-              subtitle="Tall rounded pill-capsule portrait visual representing healthcare excellence."
-              locationLabel="About: Mission Pill 1"
-              currentUrl={aboutMissionSec.imageUrl || '/src/assets/images/mission_doctor_capsule_1791534727327.jpg'}
-              defaultFallbackUrl="/src/assets/images/mission_doctor_capsule_1791534727327.jpg"
-              aspectRatioLabel="Capsule (Pill)"
-              uploading={uploadingTarget === 'section_sec-about-mission_primary'}
-              onDirectUpload={(file) => handleDirectUpload('section', 'sec-about-mission', file, 'imageUrl')}
-              onSelectImage={(newUrl) => handleSelectImage('section', 'sec-about-mission', newUrl, 'imageUrl')}
-              onResetToDefault={() => handleSelectImage('section', 'sec-about-mission', '/src/assets/images/mission_doctor_capsule_1791534727327.jpg', 'imageUrl')}
-            />
-
-            {/* Mission: Blood Pressure Capsule */}
-            <ImageItemCard
-              title="Our Mission: Blood Pressure Capsule"
-              subtitle="Overlapping rounded bottom capsule visual showing diagnostic blood pressure monitoring."
-              locationLabel="About: Mission Pill 2"
-              currentUrl={aboutMissionSec.secondaryImageUrl || '/src/assets/images/mission_blood_pressure_1791534804414.jpg'}
-              defaultFallbackUrl="/src/assets/images/mission_blood_pressure_1791534804414.jpg"
-              aspectRatioLabel="Capsule (Small Pill)"
-              uploading={uploadingTarget === 'section_sec-about-mission_secondaryImageUrl'}
-              onDirectUpload={(file) => handleDirectUpload('section', 'sec-about-mission', file, 'secondaryImageUrl')}
-              onSelectImage={(newUrl) => handleSelectImage('section', 'sec-about-mission', newUrl, 'secondaryImageUrl')}
-              onResetToDefault={() => handleSelectImage('section', 'sec-about-mission', '/src/assets/images/mission_blood_pressure_1791534804414.jpg', 'secondaryImageUrl')}
-            />
-
-            {/* Vision: Consultation Image */}
-            <ImageItemCard
-              title="Our Vision: Patient Consultation"
-              subtitle="Warm clinical consultation visual displayed in the rounded right column of Our Vision section."
-              locationLabel="About: Vision Block"
-              currentUrl={aboutVisionSec.imageUrl || '/src/assets/images/vision_consultation_warm_1791534815659.jpg'}
-              defaultFallbackUrl="/src/assets/images/vision_consultation_warm_1791534815659.jpg"
-              aspectRatioLabel="Landscape / Curved"
-              uploading={uploadingTarget === 'section_sec-about-vision_primary'}
-              onDirectUpload={(file) => handleDirectUpload('section', 'sec-about-vision', file, 'imageUrl')}
-              onSelectImage={(newUrl) => handleSelectImage('section', 'sec-about-vision', newUrl, 'imageUrl')}
-              onResetToDefault={() => handleSelectImage('section', 'sec-about-vision', '/src/assets/images/vision_consultation_warm_1791534815659.jpg', 'imageUrl')}
-            />
+            {/* 4, 5, 6. Mission & Vision Sections (Lead Clinician, Blood Pressure, Patient Consultation) */}
+            {renderMissionAndVisionCards('About')}
           </div>
         </div>
       )}
