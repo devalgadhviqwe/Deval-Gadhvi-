@@ -110,13 +110,75 @@ export async function removeLocalMediaAsset(id: string): Promise<void> {
   }
 }
 
-// Unified image upload that tries server endpoint, then falls back seamlessly to client storage
+export function validateImageFile(file: File): { valid: boolean; error?: string } {
+  const allowedMimes = [
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/svg+xml',
+    'image/gif',
+    'image/avif',
+    'image/heic',
+    'image/heif',
+    'image/bmp'
+  ];
+  if (!allowedMimes.includes(file.type.toLowerCase()) && !file.type.startsWith('image/')) {
+    return { valid: false, error: 'Only image files (JPEG, PNG, WebP, SVG, AVIF, GIF) are allowed.' };
+  }
+  const maxSize = 25 * 1024 * 1024; // 25MB
+  if (file.size > maxSize) {
+    return { valid: false, error: 'File size exceeds maximum limit of 25MB.' };
+  }
+  return { valid: true };
+}
+
+// Unified image upload to permanent cloud storage or durable backend
 export async function uploadImageUnified(
   file: File,
   category = 'general',
   authHeaders?: Record<string, string>
 ): Promise<MediaAsset> {
-  // 1. Try server endpoint first if running on Express dev server
+  const validation = validateImageFile(file);
+  if (!validation.valid) {
+    throw new Error(validation.error || 'Invalid file');
+  }
+
+  // 1. Direct Cloudinary Client Upload if client environment has preset configured
+  const cloudName = (import.meta as any).env?.VITE_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = (import.meta as any).env?.VITE_CLOUDINARY_UPLOAD_PRESET;
+  if (cloudName && uploadPreset) {
+    try {
+      const cFormData = new FormData();
+      cFormData.append('file', file);
+      cFormData.append('upload_preset', uploadPreset);
+      cFormData.append('folder', `nma_uploads/${category}`);
+
+      const cRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: 'POST',
+        body: cFormData
+      });
+
+      if (cRes.ok) {
+        const cJson = await cRes.json();
+        const asset: MediaAsset = {
+          id: `med-cld-${Date.now()}`,
+          filename: file.name,
+          url: cJson.secure_url,
+          alt: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
+          category: category as any,
+          fileSize: cJson.bytes || file.size,
+          dimensions: cJson.width && cJson.height ? `${cJson.width}x${cJson.height}` : undefined,
+          uploadedAt: new Date().toISOString()
+        };
+        await saveLocalMediaAsset(asset);
+        return asset;
+      }
+    } catch (cErr) {
+      console.warn('Direct Cloudinary client upload failed, trying server API:', cErr);
+    }
+  }
+
+  // 2. Upload via Server / Netlify API endpoint
   try {
     const formData = new FormData();
     formData.append('file', file);
@@ -134,27 +196,18 @@ export async function uploadImageUnified(
       const serverAsset: MediaAsset = await res.json();
       await saveLocalMediaAsset(serverAsset);
       return serverAsset;
+    } else if (!res.ok && contentType && contentType.includes('application/json')) {
+      const errJson = await res.json();
+      throw new Error(errJson.error || 'Server upload failed');
     }
-  } catch {
-    // Backend API unavailable (e.g. Netlify static hosting)
+  } catch (apiErr: any) {
+    if (apiErr.message && !apiErr.message.includes('fetch')) {
+      throw apiErr;
+    }
+    console.warn('API upload encountered network error:', apiErr);
   }
 
-  // 2. Client-side optimized image generation with Canvas
-  const { dataUrl, width, height } = await optimizeImageToDataUrl(file, 1200, 0.82);
-
-  const localAsset: MediaAsset = {
-    id: `med-local-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-    filename: file.name,
-    url: dataUrl,
-    alt: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
-    category: category as any,
-    fileSize: Math.round(dataUrl.length * 0.75),
-    dimensions: `${width}x${height}`,
-    uploadedAt: new Date().toISOString()
-  };
-
-  await saveLocalMediaAsset(localAsset);
-  return localAsset;
+  throw new Error('Unable to complete durable image upload. Please ensure server is running or cloud storage is configured.');
 }
 
 // Unified media list retrieval merging IndexedDB, localStorage, and bundled assets

@@ -91,6 +91,9 @@ export interface ContactSubmission {
   status: 'new' | 'in_progress' | 'resolved';
   submittedAt: string;
   adminNotes?: string;
+  preferredDate?: string;
+  serviceRequested?: string;
+  doctorRequested?: string;
 }
 
 export interface GlobalSettings {

@@ -4,7 +4,7 @@
       "id": "usr-1",
       "name": "Newark Medical Associates Admin",
       "email": "NewarkMedicalAssociates",
-      "passwordHash": "$2b$10$1p1MbwZNo4XjWHbfS8rN5eKhPl.4eI1QaMrceMxO265JJZy.S17W.",
+      "passwordHash": "$2b$10$.Pl0fTlGKU2oBbemyL.mHuboof0DuV/XoWs2hMeSKZ0UkF1LqP9MO",
       "role": "super_admin",
       "createdAt": "2026-10-09T06:54:13.120Z"
     },
@@ -552,6 +552,42 @@
   ],
   "mediaAssets": [
     {
+      "id": "med-1792126550170",
+      "filename": "80adb0d1-a28e-4467-a948-84c79b2620ee_1792126550168_4153.png",
+      "url": "/uploads/80adb0d1-a28e-4467-a948-84c79b2620ee_1792126550168_4153.png",
+      "alt": "80adb0d1-a28e-4467-a948-84c79b2620ee",
+      "category": "general",
+      "fileSize": 1919497,
+      "uploadedAt": "2026-10-16T04:55:50.170Z"
+    },
+    {
+      "id": "med-1792121941353",
+      "filename": "BwJlMFVIoFqaHXWgG0P7vlIqAM_1792121941351_7998.avif",
+      "url": "/uploads/BwJlMFVIoFqaHXWgG0P7vlIqAM_1792121941351_7998.avif",
+      "alt": "BwJlMFVIoFqaHXWgG0P7vlIqAM",
+      "category": "general",
+      "fileSize": 22727,
+      "uploadedAt": "2026-10-16T03:39:01.353Z"
+    },
+    {
+      "id": "med-1792121917907",
+      "filename": "jJjwlImmKLqhr5SdvtunsDUAME_1792121917905_2324.avif",
+      "url": "/uploads/jJjwlImmKLqhr5SdvtunsDUAME_1792121917905_2324.avif",
+      "alt": "jJjwlImmKLqhr5SdvtunsDUAME",
+      "category": "general",
+      "fileSize": 22489,
+      "uploadedAt": "2026-10-16T03:38:37.907Z"
+    },
+    {
+      "id": "med-1792121801324",
+      "filename": "Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
+      "url": "/uploads/Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
+      "alt": "Screenshot 2026-10-15 153336",
+      "category": "general",
+      "fileSize": 44604,
+      "uploadedAt": "2026-10-16T03:36:41.324Z"
+    },
+    {
       "id": "med-1792036051667",
       "filename": "WhatsApp_Image_2026-10-05_at_12_14_58-removebg-preview_1792036051664_2055.png",
       "url": "/uploads/WhatsApp_Image_2026-10-05_at_12_14_58-removebg-preview_1792036051664_2055.png",
@@ -691,31 +727,43 @@
   ],
   "contactSubmissions": [
     {
-      "fullName": "Sarah Connor",
-      "email": "sarah@example.com",
-      "phone": "(973) 555-8822",
-      "message": "I would like to schedule a cardiology consultation with Dr. Pathak.",
-      "id": "sub-1791528917844",
+      "id": "inq-1",
+      "fullName": "Eleanor Vance",
+      "email": "e.vance@gmail.com",
+      "phone": "(973) 555-0142",
+      "preferredService": "Primary Care & Annual Physicals",
+      "preferredDoctor": "Dr. Prahlad Gadhavi",
+      "preferredDate": "2026-10-20",
+      "message": "Requesting a routine annual physical checkup and comprehensive metabolic bloodwork review.",
       "status": "new",
-      "submittedAt": "2026-10-09T06:55:17.844Z"
+      "submittedAt": "2026-10-14T09:30:00.000Z",
+      "adminNotes": "Followed up via SMS confirming 10:30 AM arrival."
     },
     {
-      "id": "sub-1",
-      "fullName": "Robert Sterling",
-      "email": "robert.sterling@example.com",
-      "phone": "(973) 555-0192",
-      "message": "Hello, I would like to schedule an annual physical exam and preventative cholesterol check with Dr. Gadhavi.",
-      "status": "new",
-      "submittedAt": "2026-10-09T02:54:13.120Z"
-    },
-    {
-      "id": "sub-2",
-      "fullName": "Anita Chen",
-      "email": "anita.chen@example.com",
-      "phone": "(201) 555-0144",
-      "message": "Interested in cardiology consultation with Dr. Pathak for periodic shortness of breath.",
+      "id": "inq-2",
+      "fullName": "Marcus Sterling",
+      "email": "marcus.sterling@outlook.com",
+      "phone": "(973) 555-0189",
+      "preferredService": "Cardiology & Heart Health",
+      "preferredDoctor": "Dr. Deval Gadhvi",
+      "preferredDate": "2026-10-18",
+      "message": "Need follow-up consultation regarding recent echocardiogram results and blood pressure regulation.",
       "status": "in_progress",
-      "submittedAt": "2026-10-08T06:54:13.120Z"
+      "submittedAt": "2026-10-13T14:15:00.000Z",
+      "adminNotes": "Dr. Deval Gadhvi reviewed test charts; scheduling in-office consultation."
+    },
+    {
+      "id": "inq-3",
+      "fullName": "Sofia Ramos",
+      "email": "sofia.r@yahoo.com",
+      "phone": "(201) 555-0123",
+      "preferredService": "Physical Therapy & Rehabilitation",
+      "preferredDoctor": "Dr. Sankalp Pathak",
+      "preferredDate": "2026-10-16",
+      "message": "Post-knee rehabilitation evaluation request following orthopedic surgery last month.",
+      "status": "resolved",
+      "submittedAt": "2026-10-12T11:00:00.000Z",
+      "adminNotes": "Initial physical therapy session completed. Home exercise regimen provided."
     }
   ],
   "sections": [
@@ -733,7 +781,7 @@
       "imageUrl": "/src/assets/images/nma_hero_consultation_teal_1791532516993.jpg",
       "isVisible": true,
       "displayOrder": 1,
-      "updatedAt": "2026-10-09T07:00:00.000Z"
+      "updatedAt": "2026-10-16T03:31:05.351Z"
     },
     {
       "id": "sec-services",
@@ -744,10 +792,10 @@
       "bodyText": "We integrate primary wellness, diagnostics, and specialty treatments under one trusted roof.",
       "primaryButtonLabel": "View All Services",
       "primaryButtonUrl": "/services",
-      "imageUrl": "/src/assets/images/nma_about_clinic_1791527274487.jpg",
+      "imageUrl": "/uploads/Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
       "isVisible": true,
       "displayOrder": 2,
-      "updatedAt": "2026-10-09T06:54:12.765Z"
+      "updatedAt": "2026-10-16T03:36:45.549Z"
     },
     {
       "id": "sec-about",
@@ -758,16 +806,16 @@
       "bodyText": "Newark Medical Associates is rooted in community trust and clinical excellence. We provide compassionate, high-quality care focused on prevention, early detection, and patient comfort in a professional, nonjudgmental environment.",
       "primaryButtonLabel": "Learn More About Us",
       "primaryButtonUrl": "/about-us",
-      "imageUrl": "/src/assets/images/gallery_screening_1_1791534688866.jpg",
-      "secondaryImageUrl": "/src/assets/images/gallery_screening_2_1791534700033.jpg",
+      "imageUrl": "/uploads/Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
+      "secondaryImageUrl": "/uploads/Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
       "additionalImages": [
-        "/src/assets/images/gallery_screening_1_1791534688866.jpg",
-        "/src/assets/images/gallery_screening_2_1791534700033.jpg",
-        "/src/assets/images/gallery_screening_3_1791534712268.jpg"
+        "/uploads/Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
+        "/uploads/jJjwlImmKLqhr5SdvtunsDUAME_1792121917905_2324.avif",
+        "/uploads/BwJlMFVIoFqaHXWgG0P7vlIqAM_1792121941351_7998.avif"
       ],
       "isVisible": true,
       "displayOrder": 3,
-      "updatedAt": "2026-10-09T06:54:12.765Z"
+      "updatedAt": "2026-10-16T03:39:05.621Z"
     },
     {
       "id": "sec-diagnostics",
@@ -816,16 +864,16 @@
       "subtitle": "Our Mission: To keep Newark healthy through accessible, preventive care that empowers every patient to live their best life.",
       "primaryButtonLabel": "Get Started",
       "primaryButtonUrl": "/contact",
-      "imageUrl": "/src/assets/images/gallery_screening_1_1791534688866.jpg",
-      "secondaryImageUrl": "/src/assets/images/gallery_screening_2_1791534700033.jpg",
+      "imageUrl": "/uploads/Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
+      "secondaryImageUrl": "/uploads/Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
       "additionalImages": [
-        "/src/assets/images/gallery_screening_1_1791534688866.jpg",
-        "/src/assets/images/gallery_screening_2_1791534700033.jpg",
-        "/src/assets/images/gallery_screening_3_1791534712268.jpg"
+        "/uploads/Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
+        "/uploads/jJjwlImmKLqhr5SdvtunsDUAME_1792121917905_2324.avif",
+        "/uploads/BwJlMFVIoFqaHXWgG0P7vlIqAM_1792121941351_7998.avif"
       ],
       "isVisible": true,
       "displayOrder": 1,
-      "updatedAt": "2026-10-15T03:03:53.089Z"
+      "updatedAt": "2026-10-16T03:39:05.614Z"
     },
     {
       "id": "sec-about-mission",
@@ -835,11 +883,11 @@
       "subtitle": "At Newark Medical Associates, our mission is to deliver accessible, high-quality, and preventive-focused clinical care.",
       "primaryButtonLabel": "Learn More",
       "primaryButtonUrl": "/services",
-      "imageUrl": "/src/assets/images/mission_doctor_capsule_1791534727327.jpg",
+      "imageUrl": "/uploads/80adb0d1-a28e-4467-a948-84c79b2620ee_1792126550168_4153.png",
       "secondaryImageUrl": "/src/assets/images/mission_blood_pressure_1791534804414.jpg",
       "isVisible": true,
       "displayOrder": 2,
-      "updatedAt": "2026-10-15T03:03:53.089Z"
+      "updatedAt": "2026-10-16T04:55:54.865Z"
     },
     {
       "id": "sec-about-vision",
@@ -855,48 +903,169 @@
       "updatedAt": "2026-10-15T03:03:53.089Z"
     }
   ],
-  "contactSubmissions": [
-    {
-      "id": "inq-1",
-      "fullName": "Eleanor Vance",
-      "email": "e.vance@gmail.com",
-      "phone": "(973) 555-0142",
-      "preferredService": "Primary Care & Annual Physicals",
-      "preferredDoctor": "Dr. Prahlad Gadhavi",
-      "preferredDate": "2026-10-20",
-      "message": "Requesting a routine annual physical checkup and comprehensive metabolic bloodwork review.",
-      "status": "new",
-      "submittedAt": "2026-10-14T09:30:00.000Z",
-      "adminNotes": "Followed up via SMS confirming 10:30 AM arrival."
-    },
-    {
-      "id": "inq-2",
-      "fullName": "Marcus Sterling",
-      "email": "marcus.sterling@outlook.com",
-      "phone": "(973) 555-0189",
-      "preferredService": "Cardiology & Heart Health",
-      "preferredDoctor": "Dr. Deval Gadhvi",
-      "preferredDate": "2026-10-18",
-      "message": "Need follow-up consultation regarding recent echocardiogram results and blood pressure regulation.",
-      "status": "in_progress",
-      "submittedAt": "2026-10-13T14:15:00.000Z",
-      "adminNotes": "Dr. Deval Gadhvi reviewed test charts; scheduling in-office consultation."
-    },
-    {
-      "id": "inq-3",
-      "fullName": "Sofia Ramos",
-      "email": "sofia.r@yahoo.com",
-      "phone": "(201) 555-0123",
-      "preferredService": "Physical Therapy & Rehabilitation",
-      "preferredDoctor": "Dr. Sankalp Pathak",
-      "preferredDate": "2026-10-16",
-      "message": "Post-knee rehabilitation evaluation request following orthopedic surgery last month.",
-      "status": "resolved",
-      "submittedAt": "2026-10-12T11:00:00.000Z",
-      "adminNotes": "Initial physical therapy session completed. Home exercise regimen provided."
-    }
-  ],
   "auditLogs": [
+    {
+      "id": "log-1792126554865-jls6",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-about-mission",
+      "details": "Updated section about_mission on about",
+      "timestamp": "2026-10-16T04:55:54.865Z"
+    },
+    {
+      "id": "log-1792126550170-nga3",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPLOAD_MEDIA",
+      "targetType": "media",
+      "targetId": "med-1792126550170",
+      "details": "Uploaded asset: 80adb0d1-a28e-4467-a948-84c79b2620ee_1792126550168_4153.png",
+      "timestamp": "2026-10-16T04:55:50.170Z"
+    },
+    {
+      "id": "log-1792121945621-dcbz",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-about",
+      "details": "Updated section about on home",
+      "timestamp": "2026-10-16T03:39:05.621Z"
+    },
+    {
+      "id": "log-1792121945614-b98z",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-about-intro",
+      "details": "Updated section about_intro on about",
+      "timestamp": "2026-10-16T03:39:05.614Z"
+    },
+    {
+      "id": "log-1792121941353-662d",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPLOAD_MEDIA",
+      "targetType": "media",
+      "targetId": "med-1792121941353",
+      "details": "Uploaded asset: BwJlMFVIoFqaHXWgG0P7vlIqAM_1792121941351_7998.avif",
+      "timestamp": "2026-10-16T03:39:01.353Z"
+    },
+    {
+      "id": "log-1792121924395-969u",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-about",
+      "details": "Updated section about on home",
+      "timestamp": "2026-10-16T03:38:44.395Z"
+    },
+    {
+      "id": "log-1792121924349-8hai",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-about-intro",
+      "details": "Updated section about_intro on about",
+      "timestamp": "2026-10-16T03:38:44.349Z"
+    },
+    {
+      "id": "log-1792121917907-9joq",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPLOAD_MEDIA",
+      "targetType": "media",
+      "targetId": "med-1792121917907",
+      "details": "Uploaded asset: jJjwlImmKLqhr5SdvtunsDUAME_1792121917905_2324.avif",
+      "timestamp": "2026-10-16T03:38:37.907Z"
+    },
+    {
+      "id": "log-1792121829553-mwg4",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-about",
+      "details": "Updated section about on home",
+      "timestamp": "2026-10-16T03:37:09.553Z"
+    },
+    {
+      "id": "log-1792121829497-9dpk",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-about-intro",
+      "details": "Updated section about_intro on about",
+      "timestamp": "2026-10-16T03:37:09.497Z"
+    },
+    {
+      "id": "log-1792121805549-dp4s",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-services",
+      "details": "Updated section services on home",
+      "timestamp": "2026-10-16T03:36:45.549Z"
+    },
+    {
+      "id": "log-1792121801325-bd5m",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPLOAD_MEDIA",
+      "targetType": "media",
+      "targetId": "med-1792121801324",
+      "details": "Uploaded asset: Screenshot_2026-10-15_153336_1792121801322_2867.jpg",
+      "timestamp": "2026-10-16T03:36:41.325Z"
+    },
+    {
+      "id": "log-1792121784461-w7or",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "LOGIN",
+      "targetType": "auth",
+      "targetId": "usr-1",
+      "details": "User signed in successfully: NewarkMedicalAssociates",
+      "timestamp": "2026-10-16T03:36:24.461Z"
+    },
+    {
+      "id": "log-1792121465351-1tcs",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-hero",
+      "details": "Updated section hero on home",
+      "timestamp": "2026-10-16T03:31:05.351Z"
+    },
+    {
+      "id": "log-1792121465341-8kal",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "LOGIN",
+      "targetType": "auth",
+      "targetId": "usr-1",
+      "details": "User signed in successfully: NewarkMedicalAssociates",
+      "timestamp": "2026-10-16T03:31:05.341Z"
+    },
+    {
+      "id": "log-1792121453874-k5a0",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "UPDATE_SECTION",
+      "targetType": "section",
+      "targetId": "sec-hero",
+      "details": "Updated section hero on home",
+      "timestamp": "2026-10-16T03:30:53.874Z"
+    },
+    {
+      "id": "log-1792121453865-pj4t",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "LOGIN",
+      "targetType": "auth",
+      "targetId": "usr-1",
+      "details": "User signed in successfully: NewarkMedicalAssociates",
+      "timestamp": "2026-10-16T03:30:53.865Z"
+    },
+    {
+      "id": "log-1792121447113-d16s",
+      "userEmail": "NewarkMedicalAssociates",
+      "action": "LOGIN",
+      "targetType": "auth",
+      "targetId": "usr-1",
+      "details": "User signed in successfully: NewarkMedicalAssociates",
+      "timestamp": "2026-10-16T03:30:47.113Z"
+    },
     {
       "id": "log-1792036084499-9i50",
       "userEmail": "admin@newarkmedicalassociates.com",

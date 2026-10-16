@@ -48,14 +48,38 @@ const ImageItemCard: React.FC<ImageItemCardProps> = ({
 }) => {
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [tempPreviewUrl, setTempPreviewUrl] = useState<string | null>(null);
 
   const isCustom = Boolean(currentUrl && currentUrl !== defaultFallbackUrl);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    await onDirectUpload(file);
-    if (fileInputRef.current) fileInputRef.current.value = '';
+
+    // Validate type and size
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif', 'image/avif', 'image/heic', 'image/bmp'];
+    if (!allowedTypes.includes(file.type.toLowerCase()) && !file.type.startsWith('image/')) {
+      alert('Only standard image files (JPEG, PNG, WebP, SVG, AVIF, GIF) are permitted.');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+      alert('File size exceeds the 25MB maximum limit.');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    // Create temporary preview for visual feedback
+    const previewBlob = URL.createObjectURL(file);
+    setTempPreviewUrl(previewBlob);
+
+    try {
+      await onDirectUpload(file);
+    } finally {
+      URL.revokeObjectURL(previewBlob);
+      setTempPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -86,11 +110,11 @@ const ImageItemCard: React.FC<ImageItemCardProps> = ({
         {/* Image Preview Box */}
         <div className="mt-4 relative aspect-[16/10] bg-slate-100 rounded-xl overflow-hidden border border-slate-200/80 group">
           <img
-            src={currentUrl || defaultFallbackUrl}
+            src={tempPreviewUrl || currentUrl || defaultFallbackUrl}
             alt={title}
             className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition-transform duration-300"
             onError={(e) => {
-              if (defaultFallbackUrl && e.currentTarget.src !== defaultFallbackUrl) {
+              if (defaultFallbackUrl && e.currentTarget.src !== defaultFallbackUrl && !tempPreviewUrl) {
                 e.currentTarget.src = defaultFallbackUrl;
               }
             }}
@@ -99,9 +123,10 @@ const ImageItemCard: React.FC<ImageItemCardProps> = ({
             {aspectRatioLabel}
           </div>
           {uploading && (
-            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center text-white text-xs font-semibold gap-2">
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              <span>Saving image...</span>
+            <div className="absolute inset-0 bg-slate-900/65 backdrop-blur-xs flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 p-3 text-center">
+              <RefreshCw className="w-5 h-5 animate-spin" />
+              <span>Uploading to cloud storage...</span>
+              <span className="text-[10px] text-slate-300 font-normal">Temporary preview — saving reference</span>
             </div>
           )}
         </div>
@@ -255,7 +280,8 @@ export const AdminImagesManager: React.FC = () => {
   };
   const aboutSec = sections.find((s) => s.sectionKey === 'about') || {
     id: 'sec-about',
-    imageUrl: '/src/assets/images/nma_about_clinic_1791527274487.jpg'
+    imageUrl: '/src/assets/images/nma_about_clinic_1791527274487.jpg',
+    additionalImages: [] as string[]
   };
   const diagSec = sections.find((s) => s.sectionKey === 'diagnostics') || {
     id: 'sec-diagnostics',

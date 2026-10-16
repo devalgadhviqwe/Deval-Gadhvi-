@@ -18,6 +18,7 @@ interface ClinicContextType {
   diagnostics: DiagnosticService[];
   testimonials: Testimonial[];
   sections: SectionContent[];
+  allSections: SectionContent[];
   isLoading: boolean;
   error: string | null;
   refreshData: () => Promise<void>;
@@ -198,7 +199,34 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     imageField?: string,
     additionalImages?: string[]
   ): Promise<boolean> => {
-    // 1. Immediately store in localStorage & IndexedDB overrides
+    // 1. Persist to server backend / cloud database FIRST
+    const token = localStorage.getItem('nma_admin_token');
+    let backendSuccess = false;
+    try {
+      const res = await fetch('/api/admin/images/update-target', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ targetType, targetId, imageUrl, imageField, additionalImages })
+      });
+      if (res.ok) {
+        backendSuccess = true;
+      } else {
+        const errJson = await res.json().catch(() => null);
+        throw new Error(errJson?.error || `Server returned error status ${res.status}`);
+      }
+    } catch (fetchErr: any) {
+      console.error('Failed to persist image target update to backend:', fetchErr);
+      throw new Error(fetchErr.message || 'Failed to save image reference to persistent database');
+    }
+
+    if (!backendSuccess) {
+      throw new Error('Database confirmation not received');
+    }
+
+    // 2. Once verified by backend, update localStorage & IndexedDB overrides
     try {
       const savedRaw = localStorage.getItem('nma_custom_images_overrides');
       const overrides: Record<string, string> = savedRaw ? JSON.parse(savedRaw) : {};
@@ -233,34 +261,30 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
       await setIdbItem('nma_custom_images_overrides', overrides);
     } catch (err) {
-      console.warn('Failed saving overrides:', err);
+      console.warn('Failed saving overrides to local storage:', err);
     }
 
-    // 2. Immediately update in-memory React state
+    // 3. Immediately update in-memory React state
     setData((prev) => {
       if (!prev) return prev;
+      let nextState = { ...prev };
+
       if (targetType === 'logo') {
         const field = imageField === 'logoDarkUrl' ? 'logoDarkUrl' : 'logoUrl';
         const val = imageUrl === '__RESET__' ? '' : imageUrl;
-        const updatedSettings = {
+        nextState.settings = {
           ...prev.settings,
           [field]: val
         } as GlobalSettings;
-        return { ...prev, settings: updatedSettings };
-      }
-      if (targetType === 'doctor') {
-        const updatedDocs = prev.doctors.map((d) =>
+      } else if (targetType === 'doctor') {
+        nextState.doctors = prev.doctors.map((d) =>
           d.id === targetId || d.slug === targetId ? { ...d, imageUrl } : d
         );
-        return { ...prev, doctors: updatedDocs };
-      }
-      if (targetType === 'service') {
-        const updatedServices = prev.services.map((s) =>
+      } else if (targetType === 'service') {
+        nextState.services = prev.services.map((s) =>
           s.id === targetId || s.slug === targetId ? { ...s, imageUrl } : s
         );
-        return { ...prev, services: updatedServices };
-      }
-      if (targetType === 'section') {
+      } else if (targetType === 'section') {
         const isAboutGallery = targetId === 'sec-about-intro' || targetId === 'sec-about' || targetId === 'about_intro' || targetId === 'about';
         const exists = prev.sections.some((s) => s.id === targetId || s.sectionKey === targetId);
         let updatedSections: SectionContent[];
@@ -298,26 +322,18 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             }
           ];
         }
-        return { ...prev, sections: updatedSections, allSections: updatedSections };
+        nextState.sections = updatedSections;
+        nextState.allSections = updatedSections;
       }
-      return prev;
+
+      try {
+        localStorage.setItem('nma_clinic_bootstrap_cache', JSON.stringify(nextState));
+      } catch {}
+
+      return nextState;
     });
 
-    // 3. Persist to server backend if reachable
-    try {
-      const token = localStorage.getItem('nma_admin_token');
-      const res = await fetch('/api/admin/images/update-target', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify({ targetType, targetId, imageUrl, imageField, additionalImages })
-      });
-      return res.ok;
-    } catch {
-      return true; // Still true because client retained it
-    }
+    return true;
   };
 
   const submitInquiry = async (formData: { fullName: string; email: string; phone: string; message: string }) => {
@@ -359,6 +375,7 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         diagnostics: data?.diagnostics || [],
         testimonials: data?.testimonials || [],
         sections: data?.sections || [],
+        allSections: data?.allSections || data?.sections || [],
         isLoading,
         error,
         refreshData: fetchData,

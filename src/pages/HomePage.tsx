@@ -62,6 +62,24 @@ export const HomePage: React.FC = () => {
   const avatar2 = heroSection?.additionalImages?.[1] || '/src/assets/images/avatar_patient_2_1791532576262.jpg';
   const avatar3 = heroSection?.additionalImages?.[2] || '/src/assets/images/avatar_patient_3_1791532595296.jpg';
 
+  // Dynamic image preload for hero to eliminate flash of unstyled content
+  React.useEffect(() => {
+    if (heroImage) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = heroImage;
+      document.head.appendChild(link);
+      return () => {
+        try {
+          document.head.removeChild(link);
+        } catch {
+          // ignore
+        }
+      };
+    }
+  }, [heroImage]);
+
   return (
     <div className="bg-white min-h-screen">
       {/* =========================================================================

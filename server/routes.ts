@@ -6,6 +6,8 @@ import fs from 'fs';
 import { db } from './db';
 import { generateToken, requireAuth, AuthenticatedRequest } from './auth';
 import { MediaAsset } from './types';
+import { uploadImageToStorage, savePersistentOverride, getPersistentOverrides } from './storageProvider';
+import { getStore } from '@netlify/blobs';
 
 const router = express.Router();
 
@@ -75,17 +77,66 @@ const upload = multer({
    PUBLIC API ENDPOINTS
    ========================================================================== */
 
-// Unified Public Data Bootstrap
-router.get('/public/bootstrap', (_req: Request, res: Response) => {
+// Unified Public Data Bootstrap (Returns all sections & merges persistent cloud overrides)
+router.get('/public/bootstrap', async (_req: Request, res: Response) => {
+  const overrides = await getPersistentOverrides();
+  let doctors = db.getDoctors().filter((d) => d.active);
+  let services = db.getServices().filter((s) => s.active);
+  let sections = db.getSections().filter((s) => s.isVisible);
+  let settings = db.getGlobalSettings();
+
+  // Merge durable cloud overrides
+  if (overrides && Object.keys(overrides).length > 0) {
+    doctors = doctors.map((doc) => {
+      const customUrl = overrides[`doctor_${doc.id}`] || overrides[`doctor_${doc.slug}`];
+      return customUrl ? { ...doc, imageUrl: customUrl } : doc;
+    });
+
+    services = services.map((srv) => {
+      const customUrl = overrides[`service_${srv.id}`] || overrides[`service_${srv.slug}`];
+      return customUrl ? { ...srv, imageUrl: customUrl } : srv;
+    });
+
+    sections = sections.map((sec) => {
+      const isAboutSec = sec.id === 'sec-about' || sec.id === 'sec-about-intro' || sec.sectionKey === 'about' || sec.sectionKey === 'about_intro';
+      const customUrl = overrides[`section_${sec.id}`]
+        || overrides[`section_${sec.sectionKey}`]
+        || (isAboutSec ? (overrides['section_sec-about-intro'] || overrides['section_sec-about']) : undefined);
+      const customSecUrl = overrides[`section_${sec.id}_secondary`]
+        || overrides[`section_${sec.sectionKey}_secondary`]
+        || (isAboutSec ? (overrides['section_sec-about-intro_secondary'] || overrides['section_sec-about_secondary']) : undefined);
+      const customAdditionalRaw = overrides[`section_${sec.id}_additional`]
+        || overrides[`section_${sec.sectionKey}_additional`]
+        || (isAboutSec ? (overrides['section_sec-about-intro_additional'] || overrides['section_sec-about_additional']) : undefined);
+      let customAdditional: string[] | undefined;
+      if (customAdditionalRaw) {
+        try { customAdditional = JSON.parse(customAdditionalRaw); } catch {}
+      }
+      return {
+        ...sec,
+        imageUrl: customUrl || sec.imageUrl,
+        secondaryImageUrl: customSecUrl || sec.secondaryImageUrl,
+        additionalImages: customAdditional || sec.additionalImages
+      };
+    });
+
+    if (overrides['logo_main'] !== undefined) {
+      settings.logoUrl = overrides['logo_main'] === '__RESET__' ? '' : overrides['logo_main'];
+    }
+    if (overrides['logo_dark'] !== undefined) {
+      settings.logoDarkUrl = overrides['logo_dark'] === '__RESET__' ? '' : overrides['logo_dark'];
+    }
+  }
+
   res.json({
-    settings: db.getGlobalSettings(),
+    settings,
     theme: db.getThemeSettings(),
-    doctors: db.getDoctors().filter((d) => d.active),
-    services: db.getServices().filter((s) => s.active),
+    doctors,
+    services,
     diagnostics: db.getDiagnostics().filter((d) => d.active),
     testimonials: db.getTestimonials(),
-    sections: db.getSections('home').filter((s) => s.isVisible),
-    allSections: db.getSections().filter((s) => s.isVisible)
+    sections,
+    allSections: sections
   });
 });
 
@@ -385,7 +436,7 @@ router.post(
       next();
     });
   },
-  (req: AuthenticatedRequest, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file uploaded' });
     }
@@ -393,31 +444,27 @@ router.post(
     const category = (req.body.category || 'general') as MediaAsset['category'];
     const alt = req.body.alt || path.basename(req.file.originalname, path.extname(req.file.originalname));
 
-    const asset: MediaAsset = {
-      id: `med-${Date.now()}`,
-      filename: req.file.filename,
-      url: `/uploads/${req.file.filename}`,
-      alt,
-      category,
-      fileSize: req.file.size,
-      uploadedAt: new Date().toISOString()
-    };
-
-    // Mirror the uploaded file to public/uploads and src/assets/images for maximum persistence
     try {
-      const publicUploads = path.resolve(process.cwd(), 'public/uploads');
-      if (!fs.existsSync(publicUploads)) fs.mkdirSync(publicUploads, { recursive: true });
-      fs.copyFileSync(req.file.path, path.join(publicUploads, req.file.filename));
+      const fileBuffer = fs.readFileSync(req.file.path);
+      const storageRes = await uploadImageToStorage(fileBuffer, req.file.originalname, req.file.mimetype, category);
 
-      const srcAssets = path.resolve(process.cwd(), 'src/assets/images');
-      if (!fs.existsSync(srcAssets)) fs.mkdirSync(srcAssets, { recursive: true });
-      fs.copyFileSync(req.file.path, path.join(srcAssets, req.file.filename));
-    } catch (err) {
-      console.warn('Failed to mirror uploaded file:', err);
+      const asset: MediaAsset = {
+        id: `med-${Date.now()}`,
+        filename: storageRes.filename,
+        url: storageRes.url,
+        alt,
+        category,
+        fileSize: storageRes.fileSize,
+        dimensions: storageRes.dimensions,
+        uploadedAt: new Date().toISOString()
+      };
+
+      const saved = db.addMediaAsset(asset, req.user!.email);
+      res.status(201).json(saved);
+    } catch (uploadErr: any) {
+      console.error('Storage upload failure:', uploadErr);
+      res.status(500).json({ error: uploadErr.message || 'Failed to upload image to durable storage' });
     }
-
-    const saved = db.addMediaAsset(asset, req.user!.email);
-    res.status(201).json(saved);
   }
 );
 
@@ -425,7 +472,7 @@ router.post(
 router.post(
   '/admin/images/update-target',
   requireAuth(['super_admin', 'editor']),
-  (req: AuthenticatedRequest, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     const { targetType, targetId, imageUrl, imageField, additionalImages } = req.body;
     if (!targetType || !targetId || !imageUrl) {
       return res.status(400).json({ error: 'targetType, targetId, and imageUrl are required' });
@@ -440,6 +487,7 @@ router.post(
         [imageField === 'logoDarkUrl' ? 'logoDarkUrl' : 'logoUrl']: imageUrl === '__RESET__' ? '' : imageUrl
       };
       db.updateGlobalSettings(updated, userEmail);
+      await savePersistentOverride(imageField === 'logoDarkUrl' ? 'logo_dark' : 'logo_main', imageUrl);
       return res.json({ success: true, item: updated });
     }
 
@@ -448,6 +496,8 @@ router.post(
       if (!doc) return res.status(404).json({ error: 'Doctor not found' });
       doc.imageUrl = imageUrl;
       db.saveDoctor(doc, userEmail);
+      await savePersistentOverride(`doctor_${doc.id}`, imageUrl);
+      await savePersistentOverride(`doctor_${doc.slug}`, imageUrl);
       return res.json({ success: true, item: doc });
     }
 
@@ -456,6 +506,8 @@ router.post(
       if (!srv) return res.status(404).json({ error: 'Service not found' });
       srv.imageUrl = imageUrl;
       db.saveService(srv, userEmail);
+      await savePersistentOverride(`service_${srv.id}`, imageUrl);
+      await savePersistentOverride(`service_${srv.slug}`, imageUrl);
       return res.json({ success: true, item: srv });
     }
 
@@ -475,7 +527,8 @@ router.post(
         };
       }
       
-      if (imageField === 'secondaryImageUrl') {
+      const isSecImg = imageField === 'secondaryImageUrl';
+      if (isSecImg) {
         sec.secondaryImageUrl = imageUrl;
       } else {
         sec.imageUrl = imageUrl;
@@ -486,12 +539,43 @@ router.post(
       }
 
       db.saveSection(sec, userEmail);
+
+      const overrideKey = isSecImg ? `section_${sec.id}_secondary` : `section_${sec.id}`;
+      await savePersistentOverride(overrideKey, imageUrl);
+      if (sec.sectionKey) {
+        const secKeyOverride = isSecImg ? `section_${sec.sectionKey}_secondary` : `section_${sec.sectionKey}`;
+        await savePersistentOverride(secKeyOverride, imageUrl);
+      }
+      if (additionalImages && Array.isArray(additionalImages)) {
+        await savePersistentOverride(`section_${sec.id}_additional`, JSON.stringify(additionalImages));
+        if (sec.sectionKey) {
+          await savePersistentOverride(`section_${sec.sectionKey}_additional`, JSON.stringify(additionalImages));
+        }
+      }
+
       return res.json({ success: true, item: sec });
     }
 
     return res.status(400).json({ error: 'Invalid targetType' });
   }
 );
+
+// Netlify Blobs Proxy Stream
+router.get('/blobs/:key', async (req: Request, res: Response) => {
+  try {
+    const blobStore = getStore('nma-media-blobs');
+    const blob = await blobStore.get(`uploads/${req.params.key}`, { type: 'stream' });
+    if (!blob) return res.status(404).json({ error: 'Blob not found' });
+    const metadata = await blobStore.getMetadata(`uploads/${req.params.key}`);
+    if (metadata?.metadata?.contentType) {
+      res.setHeader('Content-Type', metadata.metadata.contentType as string);
+    }
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    blob.pipe(res);
+  } catch (err: any) {
+    res.status(404).json({ error: err.message || 'Blob not found' });
+  }
+});
 
 router.delete('/admin/media/:id', requireAuth(['super_admin']), (req: AuthenticatedRequest, res: Response) => {
   const asset = db.getMediaAssets().find((m) => m.id === req.params.id);

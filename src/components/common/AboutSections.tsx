@@ -6,9 +6,10 @@ import { ScrollPop } from './ScrollPop';
 
 // SECTION 1: ABOUT US INTRODUCTION (REFERENCE IMAGE 1)
 export const AboutIntroSection: React.FC = () => {
-  const { sections } = useClinic();
-  const introSec = sections.find((s) => s.id === 'sec-about-intro' || s.sectionKey === 'about_intro');
-  const homeAboutSec = sections.find((s) => s.id === 'sec-about' || s.sectionKey === 'about');
+  const { sections, allSections } = useClinic();
+  const allSecs = (allSections && allSections.length > 0) ? allSections : sections;
+  const introSec = allSecs.find((s) => s.id === 'sec-about-intro' || s.sectionKey === 'about_intro');
+  const homeAboutSec = allSecs.find((s) => s.id === 'sec-about' || s.sectionKey === 'about');
   const aboutSec = introSec || homeAboutSec;
 
   const img1 = introSec?.additionalImages?.[0]
@@ -108,8 +109,9 @@ export const AboutIntroSection: React.FC = () => {
 
 // SECTION 2: OUR MISSION (REFERENCE IMAGE 2)
 export const OurMissionSection: React.FC = () => {
-  const { sections } = useClinic();
-  const missionSec = sections.find((s) => s.sectionKey === 'about_mission' || s.id === 'sec-about-mission');
+  const { sections, allSections } = useClinic();
+  const allSecs = (allSections && allSections.length > 0) ? allSections : sections;
+  const missionSec = allSecs.find((s) => s.sectionKey === 'about_mission' || s.id === 'sec-about-mission');
 
   const missionImg1 = missionSec?.imageUrl || '/src/assets/images/mission_doctor_capsule_1791534727327.jpg';
   const missionImg2 = missionSec?.secondaryImageUrl || '/src/assets/images/mission_blood_pressure_1791534804414.jpg';
@@ -212,8 +214,9 @@ export const OurMissionSection: React.FC = () => {
 
 // SECTION 3: OUR VISION (REFERENCE IMAGE 3)
 export const OurVisionSection: React.FC = () => {
-  const { sections } = useClinic();
-  const visionSec = sections.find((s) => s.sectionKey === 'about_vision' || s.id === 'sec-about-vision');
+  const { sections, allSections } = useClinic();
+  const allSecs = (allSections && allSections.length > 0) ? allSections : sections;
+  const visionSec = allSecs.find((s) => s.sectionKey === 'about_vision' || s.id === 'sec-about-vision');
   const visionImg = visionSec?.imageUrl || '/src/assets/images/vision_consultation_warm_1791534815659.jpg';
 
   const visionPoints = [
