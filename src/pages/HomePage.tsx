@@ -48,7 +48,7 @@ const getIconComponent = (iconName: string) => {
 };
 
 export const HomePage: React.FC = () => {
-  const { settings, services, diagnostics, testimonials, doctors, sections } = useClinic();
+  const { settings, services, diagnostics, testimonials, doctors, sections, blogs } = useClinic();
 
   const heroSection = sections.find((s) => s.sectionKey === 'hero');
   const servicesSection = sections.find((s) => s.sectionKey === 'services');
@@ -392,6 +392,118 @@ export const HomePage: React.FC = () => {
           FEATURED PROVIDERS / CLINICAL LEADERSHIP: TEAM (EXACT REFERENCE IMAGE 2)
           ========================================================================= */}
       <TeamSection />
+
+      {/* =========================================================================
+          HEALTH INSIGHTS & LATEST MEDICAL ARTICLES
+          ========================================================================= */}
+      {blogs && blogs.filter((b) => b.status === 'published').length > 0 && (
+        <section className="py-20 bg-white border-b border-slate-200/60">
+          <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900 block mb-2">
+                  Doctor Advice &amp; Health Insights
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#111111]">
+                  Latest Medical <span className="text-[#4380FF]">Articles</span>
+                </h2>
+                <p className="mt-2 text-sm text-slate-600 max-w-xl">
+                  Clinical advice on preventative care, heart wellness, hormonal balance, and rehabilitation from our board-certified physicians.
+                </p>
+              </div>
+
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#4380FF] hover:text-blue-700 transition-colors group shrink-0"
+              >
+                <span>Browse All Articles</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {blogs
+                .filter((b) => b.status === 'published')
+                .slice(0, 3)
+                .map((blog, idx) => (
+                  <ScrollPop
+                    key={blog.id}
+                    delay={idx * 0.08}
+                    className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                  >
+                    <div>
+                      <Link to={`/blog/${blog.slug}`} className="block relative aspect-16/10 overflow-hidden bg-slate-100">
+                        <img
+                          src={blog.imageUrl}
+                          alt={blog.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/src/assets/images/nma_hero_consultation_teal_1791532516993.jpg';
+                          }}
+                        />
+                        <div className="absolute top-3 left-3">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4380FF] text-white shadow-xs">
+                            {blog.category}
+                          </span>
+                        </div>
+                      </Link>
+
+                      <div className="p-5 space-y-2">
+                        <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                          <span>
+                            {new Date(blog.publishedAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
+                          </span>
+                          <span>·</span>
+                          <span>{blog.readingTime || '5 min read'}</span>
+                        </div>
+
+                        <Link to={`/blog/${blog.slug}`} className="block">
+                          <h3 className="text-base font-bold text-slate-900 group-hover:text-[#4380FF] transition-colors line-clamp-2 leading-snug">
+                            {blog.title}
+                          </h3>
+                        </Link>
+
+                        <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                          {blog.excerpt}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="px-5 pb-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        {blog.authorAvatar ? (
+                          <img
+                            src={blog.authorAvatar}
+                            alt={blog.authorName}
+                            className="w-6 h-6 rounded-full object-cover border border-slate-200"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-900 font-bold flex items-center justify-center text-[9px]">
+                            MD
+                          </div>
+                        )}
+                        <span className="text-[11px] font-semibold text-slate-700 truncate max-w-[140px]">
+                          {blog.authorName}
+                        </span>
+                      </div>
+
+                      <Link
+                        to={`/blog/${blog.slug}`}
+                        className="text-xs font-bold text-[#4380FF] group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Read &rarr;
+                      </Link>
+                    </div>
+                  </ScrollPop>
+                ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* =========================================================================
           SECTION 7: TESTIMONIALS

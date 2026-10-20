@@ -12,7 +12,8 @@ export const Header: React.FC = () => {
     { label: 'Home', path: '/' },
     { label: 'About', path: '/about-us' },
     { label: 'Services', path: '/services' },
-    { label: 'Providers', path: '/providers' }
+    { label: 'Providers', path: '/providers' },
+    { label: 'Blog', path: '/blog' }
   ];
 
   const isActive = (path: string) => {

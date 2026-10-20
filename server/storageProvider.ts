@@ -83,7 +83,7 @@ export async function uploadImageToStorage(
     try {
       const blobStore = getStore('nma-media-blobs');
       const blobKey = `uploads/${uniqueName}`;
-      await blobStore.set(blobKey, fileBuffer, {
+      await blobStore.set(blobKey, fileBuffer as any, {
         metadata: {
           contentType: mimetype,
           filename: originalFilename,

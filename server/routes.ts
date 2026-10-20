@@ -136,9 +136,26 @@ router.get('/public/bootstrap', async (_req: Request, res: Response) => {
     diagnostics: db.getDiagnostics().filter((d) => d.active),
     testimonials: db.getTestimonials(),
     sections,
-    allSections: sections
+    allSections: sections,
+    blogs: db.getBlogs({ status: 'published' })
   });
 });
+
+// Public Blogs Endpoints
+router.get('/public/blogs', (req: Request, res: Response) => {
+  const category = req.query.category as string | undefined;
+  const blogs = db.getBlogs({ status: 'published', category });
+  res.json(blogs);
+});
+
+router.get('/public/blogs/:slug', (req: Request, res: Response) => {
+  const blog = db.getBlogByIdOrSlug(req.params.slug);
+  if (!blog || blog.status !== 'published') {
+    return res.status(404).json({ error: 'Blog article not found' });
+  }
+  res.json(blog);
+});
+
 
 // Submit Contact Form Inquiry
 router.post('/public/inquiries', (req: Request, res: Response) => {
@@ -238,6 +255,8 @@ router.get('/admin/dashboard-stats', requireAuth(), (_req: AuthenticatedRequest,
     totalMedia: state.mediaAssets.length,
     totalInquiries: state.contactSubmissions.length,
     unreadInquiries,
+    totalBlogs: (state.blogs || []).length,
+    publishedBlogs: (state.blogs || []).filter((b) => b.status === 'published').length,
     recentInquiries: state.contactSubmissions.slice(0, 5),
     recentAudits: state.auditLogs.slice(0, 8)
   });
@@ -399,6 +418,74 @@ router.delete('/admin/testimonials/:id', requireAuth(['super_admin']), (req: Aut
   if (!success) return res.status(404).json({ error: 'Testimonial not found' });
   res.json({ success: true });
 });
+
+// Blog Articles Management
+router.get('/admin/blogs', requireAuth(), (_req: AuthenticatedRequest, res: Response) => {
+  res.json(db.getBlogs());
+});
+
+router.get('/admin/blogs/:id', requireAuth(), (req: AuthenticatedRequest, res: Response) => {
+  const blog = db.getBlogByIdOrSlug(req.params.id);
+  if (!blog) return res.status(404).json({ error: 'Blog not found' });
+  res.json(blog);
+});
+
+router.post('/admin/blogs', requireAuth(['super_admin', 'editor']), (req: AuthenticatedRequest, res: Response) => {
+  const data = req.body;
+  if (!data.title || !data.content) {
+    return res.status(400).json({ error: 'Blog title and content are required' });
+  }
+
+  const slug = (data.slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')) || `blog-${Date.now()}`;
+  const readingTime = data.readingTime || `${Math.max(1, Math.ceil(data.content.split(/\s+/).length / 200))} min read`;
+
+  const newBlog = {
+    ...data,
+    id: data.id || `blog-${Date.now()}`,
+    slug,
+    category: data.category || 'General Health',
+    authorName: data.authorName || 'Newark Medical Associates',
+    authorRole: data.authorRole || 'Clinical Staff',
+    imageUrl: data.imageUrl || '/src/assets/images/nma_hero_consultation_teal_1791532516993.jpg',
+    readingTime,
+    tags: Array.isArray(data.tags) ? data.tags : (typeof data.tags === 'string' ? data.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : []),
+    publishedAt: data.publishedAt || new Date().toISOString(),
+    status: data.status || 'published',
+    featured: Boolean(data.featured),
+    displayOrder: Number(data.displayOrder) || db.getBlogs().length + 1
+  };
+
+  const saved = db.saveBlog(newBlog, req.user!.email);
+  res.status(201).json(saved);
+});
+
+router.put('/admin/blogs/:id', requireAuth(['super_admin', 'editor']), (req: AuthenticatedRequest, res: Response) => {
+  const id = req.params.id;
+  const existing = db.getBlogByIdOrSlug(id);
+  if (!existing) return res.status(404).json({ error: 'Blog article not found' });
+
+  const data = req.body;
+  const readingTime = data.readingTime || (data.content ? `${Math.max(1, Math.ceil(data.content.split(/\s+/).length / 200))} min read` : existing.readingTime);
+
+  const updated = {
+    ...existing,
+    ...data,
+    id: existing.id,
+    readingTime,
+    tags: Array.isArray(data.tags) ? data.tags : (typeof data.tags === 'string' ? data.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : existing.tags),
+    displayOrder: data.displayOrder !== undefined ? Number(data.displayOrder) : existing.displayOrder
+  };
+
+  const saved = db.saveBlog(updated, req.user!.email);
+  res.json(saved);
+});
+
+router.delete('/admin/blogs/:id', requireAuth(['super_admin']), (req: AuthenticatedRequest, res: Response) => {
+  const success = db.deleteBlog(req.params.id, req.user!.email);
+  if (!success) return res.status(404).json({ error: 'Blog not found' });
+  res.json({ success: true });
+});
+
 
 // Sections Management
 router.get('/admin/sections', requireAuth(), (req: AuthenticatedRequest, res: Response) => {
@@ -571,7 +658,7 @@ router.get('/blobs/:key', async (req: Request, res: Response) => {
       res.setHeader('Content-Type', metadata.metadata.contentType as string);
     }
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-    blob.pipe(res);
+    (blob as any).pipe(res);
   } catch (err: any) {
     res.status(404).json({ error: err.message || 'Blob not found' });
   }

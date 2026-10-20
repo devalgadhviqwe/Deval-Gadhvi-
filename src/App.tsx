@@ -14,6 +14,8 @@ import { ServiceDetailPage } from './pages/ServiceDetailPage';
 import { ProvidersPage } from './pages/ProvidersPage';
 import { ProviderDetailPage } from './pages/ProviderDetailPage';
 import { ContactPage } from './pages/ContactPage';
+import { BlogPage } from './pages/BlogPage';
+import { BlogDetailPage } from './pages/BlogDetailPage';
 
 // Admin Pages
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
@@ -23,6 +25,7 @@ import { AdminHomepageEditor } from './pages/admin/AdminHomepageEditor';
 import { AdminDoctors } from './pages/admin/AdminDoctors';
 import { AdminServices } from './pages/admin/AdminServices';
 import { AdminDiagnostics } from './pages/admin/AdminDiagnostics';
+import { AdminBlogs } from './pages/admin/AdminBlogs';
 import { AdminMediaLibrary } from './pages/admin/AdminMediaLibrary';
 import { AdminImagesManager } from './pages/admin/AdminImagesManager';
 import { AdminInquiries } from './pages/admin/AdminInquiries';
@@ -134,6 +137,22 @@ export function App() {
                 </PublicLayout>
               }
             />
+            <Route
+              path="/blog"
+              element={
+                <PublicLayout>
+                  <BlogPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/blog/:slug"
+              element={
+                <PublicLayout>
+                  <BlogDetailPage />
+                </PublicLayout>
+              }
+            />
 
             {/* Admin Authentication */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
@@ -153,6 +172,7 @@ export function App() {
               <Route path="doctors" element={<AdminDoctors />} />
               <Route path="services" element={<AdminServices />} />
               <Route path="diagnostics" element={<AdminDiagnostics />} />
+              <Route path="blogs" element={<AdminBlogs />} />
               <Route path="media" element={<AdminMediaLibrary />} />
               <Route path="inquiries" element={<AdminInquiries />} />
               <Route path="settings" element={<AdminSettings />} />

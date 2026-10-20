@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
-import { DatabaseState, AdminUser, Doctor, Service, DiagnosticService, Testimonial, MediaAsset, ContactSubmission, SectionContent, GlobalSettings, ThemeSettings, AuditLog } from './types';
+import { DatabaseState, AdminUser, Doctor, Service, DiagnosticService, Testimonial, MediaAsset, ContactSubmission, SectionContent, GlobalSettings, ThemeSettings, AuditLog, BlogPost } from './types';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'clinic_data.json');
@@ -639,6 +639,302 @@ const INITIAL_MEDIA: MediaAsset[] = [
   }
 ];
 
+const INITIAL_BLOGS: BlogPost[] = [
+  {
+    id: 'blog-1',
+    slug: 'preventative-cardiology-early-warning-signs',
+    title: 'Preventative Cardiology: Recognizing Early Cardiovascular Warning Signs',
+    excerpt: 'Cardiovascular disease remains the leading health complication in New Jersey. Learn the subtle early symptoms often dismissed, key diagnostic tests like EKG and Echocardiography, and actionable daily steps to preserve arterial health.',
+    content: `## Why Early Cardiovascular Detection Saves Lives
+
+Heart disease often develops quietly over years or even decades before causing an acute cardiac event. At Newark Medical Associates, our cardiology department—guided by board-certified interventional cardiologist **Dr. Sankalp Pathak**—emphasizes proactive, preventative cardiology designed to detect arterial stiffness, arrhythmias, and coronary narrowing long before an emergency occurs.
+
+> "Preventative cardiology is not just about reacting to a heart attack; it is about examining cardiovascular biometrics and reversing risk markers through early lifestyle and medical intervention." — *Dr. Sankalp Pathak, MD, FACC*
+
+---
+
+### Subtle Symptoms You Should Never Dismiss
+
+Many individuals expect cardiac distress to appear only as dramatic, crushing chest pain. In clinical practice, cardiovascular insufficiency frequently presents with much more nuanced symptoms:
+
+* **Unexplained Shortness of Breath (Dyspnea):** Experiencing breathless fatigue during routine activities—such as climbing stairs or carrying groceries—that previously caused no strain.
+* **Atypical Discomfort:** Pressure, squeezing, or dull heaviness extending into the left shoulder, jaw, neck, or upper back.
+* **Sudden Exercise Intolerance:** A noticeable drop in stamina accompanied by unexplained cold sweats or lightheadedness.
+* **Palpitations & Fluttering:** Sensation of skipped beats, racing heart rates while resting, or erratic pounding.
+* **Peripheral Edema:** Persistent swelling in the ankles, feet, or lower calves that worsens toward evening.
+
+---
+
+### Essential Diagnostic Screenings Available On-Site
+
+Early detection relies on accurate, clinical-grade diagnostics. During a cardiovascular assessment at our Newark clinic, patients have access to:
+
+1. **12-Lead Resting Electrocardiogram (EKG/ECG):** Quickly measures electrical conductivity, identifying prior silent ischemia, conduction blocks, or arrhythmias.
+2. **Comprehensive Transthoracic Echocardiogram (ECHO):** Utilizes sound waves to visualize chamber dimensions, valve functionality, and overall ejection fraction.
+3. **Advanced Lipid Fractionation & Inflammatory Markers:** Beyond standard cholesterol tests, we evaluate ApoB, Lipoprotein(a), and high-sensitivity C-reactive protein (hs-CRP) for accurate vascular risk stratification.
+
+---
+
+### Five Evidence-Based Habits for Long-Term Arterial Health
+
+1. **Prioritize 150 Minutes of Moderate Aerobic Movement:** Brisk walking, cycling, or swimming strengthens the myocardium and stimulates endothelial nitric oxide production.
+2. **Target Blood Pressure Below 120/80 mmHg:** Chronic hypertension silently damages delicate endothelial cell linings.
+3. **Embrace an Anti-Inflammatory Dietary Pattern:** Incorporate extra virgin olive oil, wild fatty fish, leafy greens, walnuts, and fiber-rich legumes.
+4. **Optimize Restful Sleep:** Aim for 7–8 hours nightly. Untreated sleep apnea significantly elevates nocturnal blood pressure and arrhythmia risks.
+5. **Manage Chronic Stress Responsively:** Sustained sympathetic nervous system overdrive elevates cortisol and vascular inflammation.
+
+---
+
+### When to Schedule Your Cardiac Consultation
+
+If you have a family history of premature heart disease, elevated cholesterol, high blood pressure, or are experiencing subtle chest or breathing changes, scheduling a specialized outpatient cardiology evaluation is your best next step. Our team is dedicated to safeguarding your cardiovascular vitality right here in Newark.`,
+    category: 'Cardiology & Heart Health',
+    authorName: 'Dr. Sankalp Pathak, MD',
+    authorRole: 'Interventional Cardiologist',
+    authorAvatar: '/src/assets/images/dr_sankalp_pathak_1791527235581.jpg',
+    imageUrl: '/src/assets/images/nma_diagnostic_lab_1791527285928.jpg',
+    readingTime: '5 min read',
+    tags: ['Cardiology', 'Heart Health', 'Hypertension', 'EKG', 'Prevention'],
+    publishedAt: '2026-10-12T09:00:00.000Z',
+    updatedAt: '2026-10-12T09:00:00.000Z',
+    status: 'published',
+    featured: true,
+    displayOrder: 1,
+    metaTitle: 'Preventative Cardiology: Early Warning Signs | Newark Medical Associates',
+    metaDescription: 'Learn about early cardiovascular symptoms, diagnostic screenings, and heart health prevention from cardiologist Dr. Sankalp Pathak in Newark, NJ.'
+  },
+  {
+    id: 'blog-2',
+    slug: 'the-annual-physical-exam-preventative-health-guide',
+    title: 'The Annual Physical Exam: Your Most Powerful Preventative Health Tool',
+    excerpt: 'Why waiting until you feel unwell is the biggest healthcare mistake. Discover key biometrics, metabolic lab panels, and cancer screenings covered during your comprehensive checkup at Newark Medical Associates.',
+    content: `## The True Purpose of an Annual Comprehensive Exam
+
+Many adults only seek medical attention when acute symptoms strike—a stubborn cough, severe back ache, or sudden fatigue. However, true health preservation happens when you feel entirely well. 
+
+At Newark Medical Associates, our founder **Dr. Prahlad Gadhavi, MD** has championed preventative internal medicine for over 25 years in Essex County. The annual physical serves as your clinical baseline, detecting early-stage hypertension, pre-diabetes, renal changes, and lipid imbalances before irreversible tissue damage occurs.
+
+---
+
+### What a Thorough Physical Exam Evaluates
+
+A high-caliber preventative examination goes well beyond a quick stethoscope check. Here is what our physicians thoroughly assess:
+
+#### 1. Baseline Vital Signs & Cardiovascular Biometrics
+* Accurate blood pressure checks across both arms
+* Resting pulse rate, heart rhythm, and oxygen saturation
+* Body Mass Index (BMI), waist circumference, and visceral fat trends
+
+#### 2. Head-to-Toe Clinical Examination
+* **Ear, Nose & Throat:** Thyroid gland palpation, lymph node inspection, and oral mucosa evaluation
+* **Cardiopulmonary:** Auscultation for heart murmurs, carotid bruits, and lung adventitious sounds
+* **Abdominal & Organ Exam:** Hepatic and splenic span, aorta assessment, and gastrointestinal tenderness checks
+* **Dermatological Scan:** Identifying suspicious dysplastic moles or precancerous skin lesions
+* **Musculoskeletal & Neurological:** Reflexes, gait stability, spinal alignment, and peripheral sensation
+
+---
+
+### Vital Laboratory Panels Included
+
+Routine lab work ordered during your annual physical uncovers hidden metabolic patterns:
+
+* **Complete Blood Count (CBC):** Screens for anemia, immune deficiencies, and infection markers.
+* **Comprehensive Metabolic Panel (CMP):** Evaluates kidney filtration (eGFR, BUN, Creatinine), liver enzymes (ALT, AST), and electrolytes.
+* **Fasting Lipid Profile:** Measures total cholesterol, HDL, LDL, and triglycerides.
+* **Hemoglobin A1c:** Measures average blood glucose regulation over the previous 90 days.
+* **Thyroid Stimulating Hormone (TSH):** Evaluates metabolic rate and thyroid balance.
+
+---
+
+### Age-Appropriate Screenings You Must Not Skip
+
+Depending on your age, biological sex, and personal history, your physician coordinates essential preventative cancer screenings:
+* **Colorectal Screening:** Recommended starting at age 45 via colonoscopy or non-invasive stool DNA tests.
+* **Breast Cancer Screening:** Annual screening mammograms recommended for women beginning at age 40.
+* **Cervical Health:** Pap smear and high-risk HPV testing according to guideline intervals.
+* **Bone Density (DEXA):** Screening for osteopenia and osteoporosis in post-menopausal women and at-risk older adults.
+
+---
+
+### Partner With Your Primary Care Doctor
+
+Your health journey is an ongoing partnership. An annual physical provides the dedicated time needed to review personal health goals, medication tolerances, mental wellness, and nutritional habits. Take control of your future by scheduling your annual evaluation today.`,
+    category: 'Primary Care & Prevention',
+    authorName: 'Dr. Prahlad Gadhavi, MD',
+    authorRole: 'Primary Care Physician & Founder',
+    authorAvatar: '/src/assets/images/dr_prahlad_gadhavi_1791527214445.jpg',
+    imageUrl: '/src/assets/images/nma_hero_consultation_teal_1791532516993.jpg',
+    readingTime: '4 min read',
+    tags: ['Annual Physical', 'Primary Care', 'Screenings', 'Blood Work', 'Wellness'],
+    publishedAt: '2026-10-08T10:30:00.000Z',
+    updatedAt: '2026-10-08T10:30:00.000Z',
+    status: 'published',
+    featured: true,
+    displayOrder: 2,
+    metaTitle: 'The Annual Physical Exam Guide | Newark Medical Associates',
+    metaDescription: 'Discover what is included in an annual physical exam with Dr. Prahlad Gadhavi at Newark Medical Associates in Newark, NJ.'
+  },
+  {
+    id: 'blog-3',
+    slug: 'holistic-womens-wellness-hormones-nutrition-longevity',
+    title: "Holistic Women's Wellness: Balancing Hormones, Nutrition & Longevity",
+    excerpt: 'Comprehensive women’s healthcare goes beyond routine checkups. Explore how hormone equilibrium, plant-forward Mediterranean nutrition, circadian rhythm alignment, and stress reduction create lifelong vitality.',
+    content: `## Beyond Standard Medicine: An Integrative Approach to Women’s Health
+
+Women navigate distinct physiological transitions throughout life—from reproductive maturity and postpartum adaptations to perimenopause and post-menopausal longevity. Yet too often, fatigue, brain fog, metabolic deceleration, and sleep disruptions are dismissed as inevitable consequences of aging or stress.
+
+At Newark Medical Associates, Medical Director **Dr. Deval Gadhvi, MD** takes an empathetic, evidence-based integrative approach. By marrying traditional internal medicine with functional lifestyle science, we help women achieve sustained vitality, metabolic resilience, and hormonal harmony.
+
+---
+
+### The Three Pillars of Women's Vitality
+
+#### 1. Hormonal Balance & Metabolic Health
+Hormones do not operate in silos; thyroid, cortisol, estrogen, progesterone, and insulin continuously influence each other:
+* **Insulin Sensitivity:** Maintaining stable blood sugar prevents energy crashes and mitigates visceral adiposity.
+* **Thyroid Function:** Subtle hypothyroidism often accounts for cold sensitivity, brittle hair, sluggish digestion, and persistent fatigue.
+* **Perimenopausal Support:** Personalized evaluations for symptom relief, bone density protection, and cardiovascular resilience.
+
+#### 2. Anti-Inflammatory, Whole-Food Nutrition
+Nutrition is biological information for your cellular machinery. Our clinical recommendations emphasize:
+* **High-Density Micronutrients:** Colorful brassicas (broccoli, kale, cauliflower) support hepatic hormone clearance.
+* **Adequate High-Quality Protein:** Essential for preserving lean muscle mass, especially after age 35 (aim for 25–30g per meal).
+* **Healthy Lipids:** Wild salmon, avocados, flaxseeds, and walnuts supply essential omega-3 fatty acids that dampen systemic inflammation.
+* **Phytoestrogens:** Fermented organic soy and ground flaxseeds provide gentle receptor-modulating effects.
+
+#### 3. Stress Regulation & Cortisol Management
+Chronic multitasking and sympathetic overload lead to elevated evening cortisol, which depletes restorative deep sleep and elevates inflammatory cytokines. Practices such as daily 10-minute breathwork, restorative yoga, and boundary-setting are genuine clinical interventions.
+
+---
+
+### Proactive Breast & Pelvic Health
+
+As an active global health advocate and initiator of the *"Let’s Save Maa"* cervical and breast cancer awareness initiative, Dr. Deval Gadhvi underscores that early detection remains our strongest medical ally:
+* Perform routine monthly self-breast awareness checks.
+* Never delay recommended mammography or gynecological screenings.
+* Discuss any family history of breast, ovarian, or colon cancers to evaluate genetic screening indicators.
+
+---
+
+### Your Wellness Journey Begins with Being Heard
+
+At our Newark clinic, we dedicate the time to listen to your story, examine your complete lab profile, and build a sustainable wellness roadmap customized to your life stage. You deserve compassionate, world-class healthcare designed just for you.`,
+    category: "Women's Health & Wellness",
+    authorName: 'Dr. Deval Gadhvi, MD',
+    authorRole: 'Medical Director — Primary Care Physician',
+    authorAvatar: '/src/assets/images/dr_deval_gadhvi_1791527225408.jpg',
+    imageUrl: '/src/assets/images/gallery_screening_1_1791534688866.jpg',
+    readingTime: '6 min read',
+    tags: ["Women's Health", 'Hormones', 'Nutrition', 'Longevity', 'Lifestyle Medicine'],
+    publishedAt: '2026-10-04T14:15:00.000Z',
+    updatedAt: '2026-10-04T14:15:00.000Z',
+    status: 'published',
+    featured: true,
+    displayOrder: 3,
+    metaTitle: "Women's Wellness & Hormonal Health | Dr. Deval Gadhvi Newark",
+    metaDescription: 'Holistic women’s healthcare, hormone balance, and preventative medicine with Dr. Deval Gadhvi at Newark Medical Associates.'
+  },
+  {
+    id: 'blog-4',
+    slug: 'managing-high-blood-pressure-cholesterol-guide',
+    title: 'Managing High Blood Pressure & Cholesterol in Daily Urban Life',
+    excerpt: 'High blood pressure is termed the silent killer because it exhibits zero symptoms. Learn how our clinic helps Newark patients maintain optimal BP and lipid numbers without overwhelming lifestyle disruption.',
+    content: `## The Reality of Silent Cardiovascular Threats
+
+High blood pressure (hypertension) and elevated low-density lipoprotein (LDL) cholesterol rarely cause headaches, dizziness, or chest sensations in their early phases. Millions of Americans live with these conditions completely unaware—until an annual checkup or an emergency awakens them to the danger.
+
+Living in a bustling metropolitan area like Newark brings unique stressors: fast-paced schedules, processed convenience foods, and demanding work commitments. Fortunately, achieving excellent blood pressure and cholesterol control is entirely achievable with strategic, evidence-based adjustments.
+
+---
+
+### Target Numbers Every Patient Should Know
+
+| Diagnostic Metric | Optimal Clinical Target | Borderline / At-Risk | Stage 1 / Elevated |
+| :--- | :--- | :--- | :--- |
+| **Systolic BP** | Under 120 mmHg | 120 – 129 mmHg | 130 – 139 mmHg |
+| **Diastolic BP** | Under 80 mmHg | Under 80 mmHg | 80 – 89 mmHg |
+| **LDL Cholesterol** | Under 100 mg/dL (<70 for high risk) | 100 – 129 mg/dL | 130 – 159 mg/dL |
+| **Triglycerides** | Under 150 mg/dL | 150 – 199 mg/dL | 200 – 499 mg/dL |
+
+---
+
+### Four Pragmatic Urban Lifestyle Tweaks
+
+1. **Beware of Hidden Dietary Sodium:** Over 70% of dietary sodium comes from packaged deli meats, canned soups, breads, and takeout meals. Read nutritional labels and aim for under 2,000 mg of sodium daily.
+2. **Increase Potassium-Rich Foods:** Potassium naturally offsets sodium by relaxing arterial walls. Add avocados, sweet potatoes, bananas, and spinach to your daily meals.
+3. **Incorporate Soluble Fiber:** Soluble fiber binds to cholesterol precursors in the digestive tract, carrying them out before absorption. Oatmeal, beans, Brussels sprouts, and chia seeds are outstanding additions.
+4. **Monitor at Home:** Utilize a validated upper-arm digital cuff. Take readings at the same time each morning and evening, keeping a log for your doctor.
+
+---
+
+### When Medications Play a Protective Role
+
+When lifestyle measures alone are insufficient to reach safe targets, modern antihypertensive and lipid-lowering therapies (such as ACE inhibitors, ARBs, and statins) are exceptionally safe, well-tolerated, and proven to reduce heart attacks and strokes. At Newark Medical Associates, we collaborate closely with every patient to find the gentlest, most effective regimen suited to your biological profile.`,
+    category: 'Chronic Disease Management',
+    authorName: 'Dr. Deval Gadhvi, MD',
+    authorRole: 'Medical Director — Primary Care Physician',
+    authorAvatar: '/src/assets/images/dr_deval_gadhvi_1791527225408.jpg',
+    imageUrl: '/src/assets/images/mission_blood_pressure_1791534804414.jpg',
+    readingTime: '5 min read',
+    tags: ['Hypertension', 'Cholesterol', 'Diet', 'Medication', 'Newark Healthcare'],
+    publishedAt: '2026-09-28T11:00:00.000Z',
+    updatedAt: '2026-09-28T11:00:00.000Z',
+    status: 'published',
+    featured: false,
+    displayOrder: 4,
+    metaTitle: 'Managing Blood Pressure & Cholesterol | Newark Medical Associates',
+    metaDescription: 'Practical tips for lowering blood pressure and cholesterol in Newark, NJ with guidance from Newark Medical Associates physicians.'
+  },
+  {
+    id: 'blog-5',
+    slug: 'recovering-from-joint-back-pain-physical-therapy',
+    title: 'Recovering from Joint & Back Pain: Physical Therapy vs Bed Rest',
+    excerpt: 'Complete bed rest is no longer the clinical standard for spinal or joint pain. Discover why targeted functional movement and progressive loading speed up recovery and prevent chronic pain recurrence.',
+    content: `## The Modern Approach to Musculoskeletal Healing
+
+For decades, the standard folk advice for acute lower back pain or severe knee stiffness was to stay in bed until the pain subsided. Modern clinical biomechanics and rehabilitation medicine have completely disproven this approach. Prolonged bed rest leads to muscular deconditioning, joint stiffness, decreased disc hydration, and prolonged disability.
+
+At Newark Medical Associates, our Physical Therapy department—spearheaded by **Dr. Disha Patel, PT, DPT**—uses evidence-based movement science to relieve pain, rebuild core stability, and restore mobility.
+
+---
+
+### Why Active Rehabilitation Outperforms Passive Rest
+
+* **Enhanced Microcirculation:** Gentle, guided movement increases blood flow to ligaments, cartilage, and tendons, which naturally have limited vascularity.
+* **Neural Desensitization:** Gradual non-threatening movement calms an overactive nervous system, dialing down central pain signaling.
+* **Muscular Re-education:** Targeted exercises strengthen deep postural stabilizers (such as the transversus abdominis and multifidus) to take mechanical pressure off lumbar vertebrae.
+* **Prevention of Compensatory Injuries:** When one muscle group is weak or guarded, other joints overcompensate, creating secondary hip, shoulder, or neck problems.
+
+---
+
+### Three Core Steps to Relieve Daily Desk & Commuter Strain
+
+1. **The 30-Minute Posture Reset:** Every 30 minutes of sitting, stand up, perform 5 gentle standing lumbar extensions, and roll your shoulders back.
+2. **Hip Flexor Lengthening:** Prolonged sitting keeps the iliopsoas muscles chronically shortened, which pulls the pelvis forward and compresses the lower back. Gentle kneeling lunges restore pelvic balance.
+3. **Core Diaphragmatic Breathing:** Expanding the ribcage 360 degrees engages the pelvic floor and deep abdominal wall, supporting intra-abdominal stability.
+
+---
+
+### When to Seek a Professional Physical Therapy Evaluation
+
+If your pain persists past 7–10 days, radiates down the leg or arm, or interferes with your sleep and ability to work, a comprehensive mechanical evaluation is essential. We assess joint range of motion, muscle imbalances, and movement patterns to formulate a one-on-one recovery program that gets you moving comfortably again.`,
+    category: 'Physical Therapy & Rehabilitation',
+    authorName: 'Dr. Disha Patel, PT, DPT',
+    authorRole: 'Doctor of Physical Therapy',
+    authorAvatar: '/src/assets/images/dr_disha_patel_1791527246009.jpg',
+    imageUrl: '/src/assets/images/vision_consultation_warm_1791534815659.jpg',
+    readingTime: '4 min read',
+    tags: ['Physical Therapy', 'Back Pain', 'Joint Health', 'Mobility', 'Rehab'],
+    publishedAt: '2026-09-20T08:30:00.000Z',
+    updatedAt: '2026-09-20T08:30:00.000Z',
+    status: 'published',
+    featured: false,
+    displayOrder: 5,
+    metaTitle: 'Physical Therapy for Joint & Back Pain | Newark Medical Associates',
+    metaDescription: 'Discover why targeted movement and physical therapy with Dr. Disha Patel heals back pain faster than bed rest at Newark Medical Associates.'
+  }
+];
+
 class Database {
   private state: DatabaseState;
 
@@ -657,7 +953,12 @@ class Database {
     if (fs.existsSync(DB_FILE)) {
       try {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        if (!parsed.blogs || !Array.isArray(parsed.blogs) || parsed.blogs.length === 0) {
+          parsed.blogs = INITIAL_BLOGS;
+          this.saveState(parsed);
+        }
+        return parsed;
       } catch (err) {
         console.error('Failed to read db file, recreating initial state:', err);
       }
@@ -733,7 +1034,8 @@ class Database {
           details: 'Initialized Newark Medical Associates database with verified clinical data and doctors.',
           timestamp: new Date().toISOString()
         }
-      ]
+      ],
+      blogs: INITIAL_BLOGS
     };
 
     this.saveState(initialState);
@@ -1022,6 +1324,47 @@ class Database {
     if (!target) return false;
     this.state.users = this.state.users.filter((u) => u.id !== id);
     this.logAudit(userEmail, 'DELETE_USER', 'user', id, `Removed admin user: ${target.email}`);
+    this.saveState(this.state);
+    return true;
+  }
+
+  // Blogs Management
+  public getBlogs(filter?: { status?: 'published' | 'draft'; category?: string }): BlogPost[] {
+    let list = this.state.blogs || [];
+    if (filter?.status) {
+      list = list.filter((b) => b.status === filter.status);
+    }
+    if (filter?.category && filter.category !== 'All') {
+      list = list.filter((b) => b.category.toLowerCase() === filter.category!.toLowerCase());
+    }
+    return [...list].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  }
+
+  public getBlogByIdOrSlug(idOrSlug: string): BlogPost | undefined {
+    return (this.state.blogs || []).find((b) => b.id === idOrSlug || b.slug === idOrSlug);
+  }
+
+  public saveBlog(blog: BlogPost, userEmail: string): BlogPost {
+    if (!this.state.blogs) this.state.blogs = [];
+    const index = this.state.blogs.findIndex((b) => b.id === blog.id);
+    blog.updatedAt = new Date().toISOString();
+    if (index >= 0) {
+      this.state.blogs[index] = blog;
+      this.logAudit(userEmail, 'UPDATE_BLOG', 'blog', blog.id, `Updated blog article "${blog.title}"`);
+    } else {
+      this.state.blogs.unshift(blog);
+      this.logAudit(userEmail, 'CREATE_BLOG', 'blog', blog.id, `Created blog article "${blog.title}"`);
+    }
+    this.saveState(this.state);
+    return blog;
+  }
+
+  public deleteBlog(id: string, userEmail: string): boolean {
+    if (!this.state.blogs) return false;
+    const blog = this.state.blogs.find((b) => b.id === id);
+    if (!blog) return false;
+    this.state.blogs = this.state.blogs.filter((b) => b.id !== id);
+    this.logAudit(userEmail, 'DELETE_BLOG', 'blog', id, `Deleted blog article "${blog.title}"`);
     this.saveState(this.state);
     return true;
   }

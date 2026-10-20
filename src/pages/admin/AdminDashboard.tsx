@@ -11,7 +11,8 @@ import {
   Plus,
   CheckCircle2,
   ExternalLink,
-  ShieldAlert
+  ShieldAlert,
+  BookOpen
 } from 'lucide-react';
 import { useClinic } from '../../context/ClinicContext';
 import { useAuth } from '../../context/AuthContext';
@@ -26,6 +27,8 @@ interface StatsData {
   totalMedia: number;
   totalInquiries: number;
   unreadInquiries: number;
+  totalBlogs?: number;
+  publishedBlogs?: number;
   recentInquiries: any[];
   recentAudits: any[];
 }
@@ -113,8 +116,15 @@ export const AdminDashboard: React.FC = () => {
 
         <div className="flex items-center gap-3">
           <Link
-            to="/admin/images"
+            to="/admin/blogs"
             className="px-4 py-2.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Manage Blogs</span>
+          </Link>
+          <Link
+            to="/admin/images"
+            className="px-4 py-2.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5"
           >
             <ImageIcon className="w-3.5 h-3.5" />
             <span>Manage Images</span>
@@ -138,11 +148,11 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* KPI Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {/* Doctors Stat */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500">Clinical Doctors</span>
+            <span className="text-xs font-semibold text-slate-500">Doctors</span>
             <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-900 flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
@@ -151,14 +161,14 @@ export const AdminDashboard: React.FC = () => {
             {loading ? '...' : stats?.totalDoctors || 4}
           </div>
           <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-            <span className="text-emerald-700 font-semibold">{stats?.activeDoctors || 4} active</span> in directory
+            <span className="text-emerald-700 font-semibold">{stats?.activeDoctors || 4} active</span>
           </div>
         </div>
 
         {/* Services Stat */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500">Medical Services</span>
+            <span className="text-xs font-semibold text-slate-500">Services</span>
             <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-800 flex items-center justify-center">
               <Stethoscope className="w-4 h-4" />
             </div>
@@ -167,14 +177,33 @@ export const AdminDashboard: React.FC = () => {
             {loading ? '...' : stats?.totalServices || 8}
           </div>
           <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-            <span className="text-emerald-700 font-semibold">{stats?.activeServices || 8} published</span> on website
+            <span className="text-emerald-700 font-semibold">{stats?.activeServices || 8} published</span>
           </div>
         </div>
+
+        {/* Blog Articles Stat */}
+        <Link
+          to="/admin/blogs"
+          className="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-xs transition-all group block"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-slate-500 group-hover:text-blue-900 transition-colors">Blog Articles</span>
+            <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center group-hover:bg-blue-900 group-hover:text-white transition-colors">
+              <BookOpen className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-slate-900 tabular-nums">
+            {loading ? '...' : stats?.totalBlogs || 5}
+          </div>
+          <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+            <span className="text-emerald-700 font-semibold">{stats?.publishedBlogs || 5} published</span>
+          </div>
+        </Link>
 
         {/* Media Stat */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500">Media Assets</span>
+            <span className="text-xs font-semibold text-slate-500">Media</span>
             <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
               <ImageIcon className="w-4 h-4" />
             </div>
@@ -183,14 +212,14 @@ export const AdminDashboard: React.FC = () => {
             {loading ? '...' : stats?.totalMedia || 7}
           </div>
           <div className="text-[11px] text-slate-500 mt-1">
-            Portraits, facility photos &amp; labs
+            Portraits, facility &amp; labs
           </div>
         </div>
 
         {/* Inquiries Stat */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs col-span-2 md:col-span-1">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500">Patient Inquiries</span>
+            <span className="text-xs font-semibold text-slate-500">Inquiries</span>
             <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center">
               <Inbox className="w-4 h-4" />
             </div>
@@ -199,7 +228,7 @@ export const AdminDashboard: React.FC = () => {
             {loading ? '...' : stats?.totalInquiries || 2}
           </div>
           <div className="text-[11px] text-amber-700 font-semibold mt-1">
-            {stats?.unreadInquiries || 0} unread / pending action
+            {stats?.unreadInquiries || 0} unread
           </div>
         </div>
       </div>

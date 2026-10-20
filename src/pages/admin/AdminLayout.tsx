@@ -16,7 +16,8 @@ import {
   Menu,
   X,
   Shield,
-  ChevronRight
+  ChevronRight,
+  BookOpen
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useClinic } from '../../context/ClinicContext';
@@ -40,6 +41,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Doctors Management', path: '/admin/doctors', icon: Users },
     { label: 'Services Management', path: '/admin/services', icon: Stethoscope },
     { label: 'Diagnostic Solutions', path: '/admin/diagnostics', icon: Activity },
+    { label: 'Blog Articles', path: '/admin/blogs', icon: BookOpen },
     { label: 'Media Library', path: '/admin/media', icon: ImageIcon },
     { label: 'Patient Inquiries', path: '/admin/inquiries', icon: Inbox },
     { label: 'Practice Settings', path: '/admin/settings', icon: Settings },

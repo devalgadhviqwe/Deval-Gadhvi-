@@ -155,6 +155,28 @@ export interface SectionContent {
   updatedAt: string;
 }
 
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  authorName: string;
+  authorRole: string;
+  authorAvatar?: string;
+  imageUrl: string;
+  readingTime: string;
+  tags: string[];
+  publishedAt: string;
+  updatedAt?: string;
+  status: 'published' | 'draft';
+  featured: boolean;
+  displayOrder: number;
+  metaTitle?: string;
+  metaDescription?: string;
+}
+
 export interface DatabaseState {
   users: AdminUser[];
   globalSettings: GlobalSettings;
@@ -167,4 +189,6 @@ export interface DatabaseState {
   contactSubmissions: ContactSubmission[];
   sections: SectionContent[];
   auditLogs: AuditLog[];
+  blogs: BlogPost[];
 }
+

@@ -7,7 +7,8 @@ import {
   DiagnosticService,
   Testimonial,
   SectionContent,
-  BootstrapData
+  BootstrapData,
+  BlogPost
 } from '../types';
 
 interface ClinicContextType {
@@ -19,6 +20,7 @@ interface ClinicContextType {
   testimonials: Testimonial[];
   sections: SectionContent[];
   allSections: SectionContent[];
+  blogs: BlogPost[];
   isLoading: boolean;
   error: string | null;
   refreshData: () => Promise<void>;
@@ -39,7 +41,8 @@ const defaultBootstrapData: BootstrapData = {
   diagnostics: (defaultClinicData.diagnosticServices as any[]).filter((d) => d.active),
   testimonials: (defaultClinicData.testimonials as any[]),
   sections: (defaultClinicData.sections as any[]).filter((s) => s.isVisible),
-  allSections: (defaultClinicData.sections as any[]).filter((s) => s.isVisible)
+  allSections: (defaultClinicData.sections as any[]).filter((s) => s.isVisible),
+  blogs: ((defaultClinicData as any).blogs as any[]) || []
 };
 
 // Pure helper to merge custom images overrides
@@ -376,6 +379,7 @@ export const ClinicProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         testimonials: data?.testimonials || [],
         sections: data?.sections || [],
         allSections: data?.allSections || data?.sections || [],
+        blogs: data?.blogs || ((defaultClinicData as any).blogs as any[]) || [],
         isLoading,
         error,
         refreshData: fetchData,
