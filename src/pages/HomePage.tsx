@@ -230,7 +230,7 @@ export const HomePage: React.FC = () => {
           <div className="mt-12 text-center">
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+              className="hover-btn-pop inline-flex items-center gap-2 px-7 py-3 text-[15px] font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full transition-colors shadow-xs"
             >
               <span>Explore All Detailed Clinical Services</span>
               <ArrowRight className="w-4 h-4" />
@@ -272,8 +272,10 @@ export const HomePage: React.FC = () => {
                   delay={(idx % 4) * 0.07}
                   initialScale={0.92}
                   yOffset={24}
-                  className="group bg-slate-50 hover:bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-[#4380FF]/40 hover-card-lift transition-all flex flex-col justify-between"
+                  className="group bg-slate-50 hover:bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-[#4380FF]/40 hover-card-lift transition-all flex flex-col justify-between relative overflow-hidden"
                 >
+                  {/* Accent hover indicator line */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div>
                     <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center mb-4 group-hover:bg-[#4380FF] group-hover:text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                       <Icon className="w-5 h-5" />
@@ -304,9 +306,9 @@ export const HomePage: React.FC = () => {
             </div>
             <a
               href={`tel:${(settings?.phone || '973-412-9404').replace(/[^0-9]/g, '')}`}
-              className="px-5 py-2.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg whitespace-nowrap shrink-0 transition-colors shadow-2xs inline-flex items-center gap-1.5"
+              className="hover-btn-pop px-6 py-2.5 text-[14px] font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full whitespace-nowrap shrink-0 transition-colors shadow-xs inline-flex items-center gap-2"
             >
-              <Phone className="w-3.5 h-3.5" />
+              <Phone className="w-4 h-4" />
               <span>Call to Book: {settings?.phone || '(973) 412-9404'}</span>
             </a>
           </div>
@@ -336,12 +338,13 @@ export const HomePage: React.FC = () => {
               delay={0.05}
               initialScale={0.92}
               yOffset={24}
-              className="bg-white rounded-2xl p-8 border border-slate-200/90 shadow-2xs relative"
+              className="group bg-white rounded-2xl p-8 border border-slate-200/90 hover:border-[#4380FF]/40 hover-card-lift shadow-2xs relative overflow-hidden transition-all"
             >
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="text-3xl font-extrabold text-blue-900/20 font-serif block mb-3">
                 01
               </span>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">
+              <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-[#4380FF] transition-colors">
                 Listen
               </h3>
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -354,12 +357,13 @@ export const HomePage: React.FC = () => {
               delay={0.15}
               initialScale={0.92}
               yOffset={24}
-              className="bg-white rounded-2xl p-8 border border-slate-200/90 shadow-2xs relative"
+              className="group bg-white rounded-2xl p-8 border border-slate-200/90 hover:border-[#4380FF]/40 hover-card-lift shadow-2xs relative overflow-hidden transition-all"
             >
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="text-3xl font-extrabold text-blue-900/20 font-serif block mb-3">
                 02
               </span>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">
+              <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-[#4380FF] transition-colors">
                 Understand
               </h3>
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -372,12 +376,13 @@ export const HomePage: React.FC = () => {
               delay={0.25}
               initialScale={0.92}
               yOffset={24}
-              className="bg-white rounded-2xl p-8 border border-slate-200/90 shadow-2xs relative"
+              className="group bg-white rounded-2xl p-8 border border-slate-200/90 hover:border-[#4380FF]/40 hover-card-lift shadow-2xs relative overflow-hidden transition-all"
             >
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="text-3xl font-extrabold text-blue-900/20 font-serif block mb-3">
                 03
               </span>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">
+              <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-[#4380FF] transition-colors">
                 Personalize
               </h3>
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -429,8 +434,10 @@ export const HomePage: React.FC = () => {
                   <ScrollPop
                     key={blog.id}
                     delay={idx * 0.08}
-                    className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                    className="group bg-white rounded-2xl border border-slate-200/90 hover:border-[#4380FF]/40 overflow-hidden shadow-2xs hover:shadow-md hover-card-lift transition-all flex flex-col justify-between relative"
                   >
+                    {/* Accent hover indicator line */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" />
                     <div>
                       <Link to={`/blog/${blog.slug}`} className="block relative aspect-16/10 overflow-hidden bg-slate-100">
                         <img
@@ -529,8 +536,9 @@ export const HomePage: React.FC = () => {
                 delay={(idx % 4) * 0.08}
                 initialScale={0.92}
                 yOffset={24}
-                className="bg-white rounded-xl p-6 border border-slate-200 shadow-2xs flex flex-col justify-between"
+                className="group bg-white rounded-2xl p-6 border border-slate-200/90 hover:border-[#4380FF]/40 hover-card-lift shadow-2xs flex flex-col justify-between relative overflow-hidden transition-all"
               >
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div>
                   <div className="flex items-center gap-1 text-amber-500 mb-3">
                     {[...Array(t.rating)].map((_, i) => (
@@ -571,14 +579,14 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-end">
               <a
                 href={`tel:${(settings?.phone || '973-412-9404').replace(/[^0-9]/g, '')}`}
-                className="px-6 py-3.5 text-center text-sm font-bold text-blue-950 bg-white hover:bg-slate-100 rounded-lg shadow-sm transition-colors inline-flex items-center justify-center gap-2"
+                className="hover-btn-pop px-7 py-3.5 text-center text-[15px] font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors inline-flex items-center justify-center gap-2"
               >
-                <Phone className="w-4 h-4 text-blue-900" />
+                <Phone className="w-4 h-4 text-white" />
                 <span>Call to Book: {settings?.phone || '(973) 412-9404'}</span>
               </a>
               <Link
                 to="/providers"
-                className="px-6 py-3.5 text-center text-sm font-semibold text-white bg-blue-800/80 hover:bg-blue-800 border border-blue-700 rounded-lg transition-colors text-center"
+                className="hover-btn-pop px-7 py-3.5 text-center text-[15px] font-medium text-white bg-white/10 hover:bg-white/20 border border-white/30 rounded-full transition-colors text-center"
               >
                 Provider Directory &amp; Direct Numbers
               </Link>

@@ -18,11 +18,11 @@ export const AdminTheme: React.FC = () => {
     if (clinicTheme) return clinicTheme;
     return (defaultClinicData.themeSettings as any) || {
       primaryColor: '#4380FF',
-      secondaryColor: '#0284c7',
-      accentColor: '#0d9488',
+      secondaryColor: '#3270ee',
+      accentColor: '#4380FF',
       backgroundColor: '#f8fafc',
       fontFamily: 'Plus Jakarta Sans',
-      borderRadius: '0.5rem'
+      borderRadius: '9999px'
     };
   };
 
@@ -101,11 +101,11 @@ export const AdminTheme: React.FC = () => {
   const resetToDefault = () => {
     const defaultTheme = {
       primaryColor: '#4380FF',
-      secondaryColor: '#0284c7',
-      accentColor: '#0d9488',
+      secondaryColor: '#3270ee',
+      accentColor: '#4380FF',
       backgroundColor: '#f8fafc',
       fontFamily: 'Plus Jakarta Sans',
-      borderRadius: '0.5rem'
+      borderRadius: '9999px'
     };
     setTheme(defaultTheme);
     try {
@@ -146,7 +146,7 @@ export const AdminTheme: React.FC = () => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-5 py-2 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-60 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5"
+              className="hover-btn-pop px-6 py-2 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] disabled:opacity-60 rounded-full shadow-xs transition-colors flex items-center gap-1.5"
             >
               {saved ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Save className="w-3.5 h-3.5" />}
               <span>{saving ? 'Applying...' : saved ? 'Applied!' : 'Save & Apply'}</span>
@@ -226,19 +226,20 @@ export const AdminTheme: React.FC = () => {
             <label className="block text-xs font-bold text-slate-700 mb-1.5">
               Border Radius Preset
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
                 { label: 'Subtle (0.375rem)', val: '0.375rem' },
                 { label: 'Medium (0.5rem)', val: '0.5rem' },
-                { label: 'Rounded (0.75rem)', val: '0.75rem' }
+                { label: 'Rounded (0.75rem)', val: '0.75rem' },
+                { label: 'Pill (Full)', val: '9999px' }
               ].map((r) => (
                 <button
                   key={r.val}
                   type="button"
                   onClick={() => setTheme({ ...theme, borderRadius: r.val })}
-                  className={`py-2 px-3 text-xs font-semibold rounded-lg border transition-colors ${
+                  className={`py-2 px-3 text-xs font-semibold rounded-full border transition-colors ${
                     theme.borderRadius === r.val
-                      ? 'bg-blue-900 text-white border-blue-900'
+                      ? 'bg-[#4380FF] text-white border-[#4380FF]'
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                   }`}
                 >

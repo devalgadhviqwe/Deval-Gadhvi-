@@ -142,7 +142,7 @@ export const AdminMediaLibrary: React.FC = () => {
         </div>
 
         {hasRole(['super_admin', 'editor']) && (
-          <label className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg cursor-pointer shadow-2xs transition-colors shrink-0">
+          <label className="hover-btn-pop inline-flex items-center gap-2 px-5 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full cursor-pointer shadow-xs transition-colors shrink-0">
             <Upload className="w-4 h-4" />
             <span>{uploading ? 'Uploading...' : 'Upload Image'}</span>
             <input

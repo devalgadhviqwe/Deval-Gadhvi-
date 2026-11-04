@@ -109,7 +109,7 @@ export const ServicesPage: React.FC = () => {
                 <div className="p-6 pt-0">
                   <Link
                     to={`/services/${service.slug}`}
-                    className="w-full text-center flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-bold text-white bg-blue-900 group-hover:bg-[#4380FF] rounded-lg transition-all duration-300 shadow-2xs group-hover:shadow-md group-hover:shadow-blue-500/20"
+                    className="hover-btn-pop w-full text-center flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full transition-all duration-300 shadow-xs"
                   >
                     <span>View Service Details</span>
                     <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -138,8 +138,10 @@ export const ServicesPage: React.FC = () => {
             {diagnostics.map((diag) => (
               <div
                 key={diag.id}
-                className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-md hover:bg-white transition-all duration-200 group cursor-default"
+                className="relative overflow-hidden p-4 rounded-xl bg-slate-50 border border-slate-200 hover:-translate-y-1 hover:border-[#4380FF]/40 hover:shadow-md hover:bg-white transition-all duration-300 group cursor-default"
               >
+                {/* Accent hover indicator line */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="font-bold text-sm text-slate-900 group-hover:text-[#4380FF] transition-colors">{diag.name}</div>
                 <p className="text-xs text-slate-500 mt-1 line-clamp-2">{diag.shortDesc}</p>
                 <div className="text-[11px] text-blue-900 font-semibold mt-2 group-hover:translate-x-0.5 transition-transform">
@@ -159,14 +161,14 @@ export const ServicesPage: React.FC = () => {
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a
               href="tel:9734129404"
-              className="inline-flex items-center gap-2 px-5 py-3 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-2xs transition-colors"
+              className="hover-btn-pop inline-flex items-center gap-2 px-7 py-3 text-[15px] font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors"
             >
               <Phone className="w-4 h-4" />
               <span>Call Primary Care: (973) 412-9404</span>
             </a>
             <Link
               to="/providers"
-              className="inline-flex items-center gap-2 px-5 py-3 text-xs font-bold text-blue-900 bg-white hover:bg-blue-100/60 border border-blue-200 rounded-lg transition-colors"
+              className="hover-btn-pop inline-flex items-center gap-2 px-7 py-3 text-[15px] font-medium text-[#4380FF] bg-white hover:bg-blue-50/50 border border-[#4380FF] rounded-full transition-colors"
             >
               <span>View All Providers &amp; Numbers</span>
               <ArrowRight className="w-4 h-4" />

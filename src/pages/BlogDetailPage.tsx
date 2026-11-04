@@ -46,7 +46,7 @@ export const BlogDetailPage: React.FC = () => {
           </p>
           <Link
             to="/blog"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-white bg-[#4380FF] rounded-full hover:bg-blue-600 transition-colors"
+            className="hover-btn-pop inline-flex items-center gap-1.5 px-6 py-2.5 text-xs font-medium text-white bg-[#4380FF] rounded-full hover:bg-[#3270ee] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Blog Directory</span>
@@ -359,8 +359,10 @@ export const BlogDetailPage: React.FC = () => {
               {relatedBlogs.map((rBlog) => (
                 <div
                   key={rBlog.id}
-                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                  className="group bg-white rounded-2xl border border-slate-200 hover:border-[#4380FF]/40 overflow-hidden shadow-2xs hover:shadow-md hover-card-lift transition-all flex flex-col justify-between relative"
                 >
+                  {/* Accent hover indicator line */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" />
                   <Link to={`/blog/${rBlog.slug}`} className="block relative aspect-16/10 overflow-hidden bg-slate-100">
                     <img
                       src={rBlog.imageUrl}

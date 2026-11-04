@@ -188,7 +188,7 @@ export const AdminHomepageEditor: React.FC = () => {
                     type="button"
                     disabled={isSaving}
                     onClick={() => handleSaveSection(section)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-60 rounded-lg shadow-2xs transition-colors"
+                    className="hover-btn-pop inline-flex items-center gap-1.5 px-5 py-2 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] disabled:opacity-60 rounded-full shadow-xs transition-colors"
                   >
                     {isSuccess ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Save className="w-3.5 h-3.5" />}
                     <span>{isSaving ? 'Saving...' : isSuccess ? 'Saved!' : 'Save & Publish'}</span>

@@ -107,7 +107,7 @@ export const BlogPage: React.FC = () => {
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-[#4380FF] text-white shadow-xs'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-900'
+                    : 'bg-white text-slate-600 border border-slate-200 hover:border-[#4380FF]/60 hover:text-[#4380FF]'
                 }`}
               >
                 {cat}
@@ -128,7 +128,9 @@ export const BlogPage: React.FC = () => {
               <span>Featured Doctor Article</span>
             </div>
 
-            <div className="bg-slate-50 rounded-3xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-md transition-shadow grid grid-cols-1 lg:grid-cols-12 gap-0">
+            <div className="group bg-slate-50 rounded-3xl border border-slate-200/90 hover:border-[#4380FF]/40 overflow-hidden shadow-xs hover:shadow-md transition-all grid grid-cols-1 lg:grid-cols-12 gap-0 relative">
+              {/* Accent hover indicator line */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" />
               {/* Cover Image */}
               <div className="lg:col-span-7 relative min-h-[280px] lg:min-h-[380px] overflow-hidden group">
                 <Link to={`/blog/${featuredBlog.slug}`}>
@@ -243,7 +245,7 @@ export const BlogPage: React.FC = () => {
                   setSearchTerm('');
                   setSelectedCategory('All');
                 }}
-                className="mt-2 px-4 py-2 text-xs font-bold text-white bg-[#4380FF] rounded-full shadow-xs hover:bg-blue-600 transition-colors"
+                className="hover-btn-pop mt-2 px-5 py-2.5 text-xs font-medium text-white bg-[#4380FF] rounded-full shadow-xs hover:bg-[#3270ee] transition-colors"
               >
                 Clear Filters
               </button>
@@ -254,8 +256,10 @@ export const BlogPage: React.FC = () => {
                 <ScrollPop
                   key={blog.id}
                   delay={(idx % 3) * 0.08}
-                  className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                  className="group bg-white rounded-2xl border border-slate-200/90 hover:border-[#4380FF]/40 overflow-hidden shadow-2xs hover:shadow-md hover-card-lift transition-all flex flex-col justify-between relative"
                 >
+                  {/* Accent hover indicator line */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" />
                   <div>
                     {/* Card Cover Image */}
                     <Link to={`/blog/${blog.slug}`} className="block relative aspect-16/10 overflow-hidden bg-slate-100">
@@ -374,15 +378,15 @@ export const BlogPage: React.FC = () => {
           <div className="pt-2 flex flex-wrap justify-center gap-3">
             <Link
               to="/contact"
-              className="px-6 py-3 text-xs font-bold text-white bg-[#4380FF] hover:bg-blue-600 rounded-full transition-all shadow-xs"
+              className="hover-btn-pop px-7 py-3 text-[15px] font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full transition-all shadow-xs"
             >
               Book an Appointment
             </Link>
             <a
               href={`tel:${(settings?.phone || '973-412-9404').replace(/[^0-9]/g, '')}`}
-              className="px-6 py-3 text-xs font-bold text-slate-200 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full transition-all inline-flex items-center gap-2"
+              className="hover-btn-pop px-7 py-3 text-[15px] font-medium text-slate-200 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full transition-all inline-flex items-center gap-2"
             >
-              <Phone className="w-3.5 h-3.5 text-sky-400" />
+              <Phone className="w-4 h-4 text-sky-400" />
               <span>Call: {settings?.phone || '(973) 412-9404'}</span>
             </a>
           </div>

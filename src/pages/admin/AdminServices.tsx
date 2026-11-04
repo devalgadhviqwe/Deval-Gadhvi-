@@ -181,7 +181,7 @@ export const AdminServices: React.FC = () => {
         {hasRole(['super_admin', 'editor']) && (
           <button
             onClick={handleOpenAdd}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-2xs transition-colors"
+            className="hover-btn-pop inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Add New Service</span>
@@ -441,7 +441,7 @@ export const AdminServices: React.FC = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-60 rounded-lg shadow-2xs"
+                  className="hover-btn-pop px-6 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] disabled:opacity-60 rounded-full shadow-xs"
                 >
                   {saving ? 'Saving...' : 'Save & Publish Service'}
                 </button>

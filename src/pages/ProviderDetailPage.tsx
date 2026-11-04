@@ -90,7 +90,7 @@ export const ProviderDetailPage: React.FC = () => {
                 <div className="pt-2 border-t border-slate-200">
                   <a
                     href={`tel:${doctor.phone.replace(/[^0-9]/g, '')}`}
-                    className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-bold text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-lg shadow-2xs transition-colors"
+                    className="hover-btn-pop w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors"
                   >
                     <Phone className="w-3.5 h-3.5" />
                     <span>Call to Book: {doctor.phone}</span>
@@ -205,7 +205,7 @@ export const ProviderDetailPage: React.FC = () => {
               <div>
                 <a
                   href={`tel:${doctor.phone.replace(/[^0-9]/g, '')}`}
-                  className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-sm font-bold text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-xl shadow-md transition-all active:scale-[0.98]"
+                  className="hover-btn-pop w-full inline-flex items-center justify-center gap-2.5 px-7 py-3.5 text-[15px] font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-all active:scale-[0.98]"
                 >
                   <Phone className="w-4 h-4" />
                   <span>Call to Book: {doctor.phone}</span>

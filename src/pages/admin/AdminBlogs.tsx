@@ -461,7 +461,7 @@ export const AdminBlogs: React.FC = () => {
 
           <button
             onClick={handleOpenAdd}
-            className="px-4 py-2.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5"
+            className="hover-btn-pop px-5 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
             <span>Write New Article</span>
@@ -552,7 +552,7 @@ export const AdminBlogs: React.FC = () => {
             </p>
             <button
               onClick={handleOpenAdd}
-              className="px-4 py-2 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg transition-colors inline-flex items-center gap-1.5"
+              className="hover-btn-pop px-5 py-2 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full transition-colors inline-flex items-center gap-1.5"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create Article</span>
@@ -668,7 +668,7 @@ export const AdminBlogs: React.FC = () => {
 
                   <button
                     onClick={() => handleOpenEdit(blog)}
-                    className="px-3 py-1.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-2xs transition-colors flex items-center gap-1"
+                    className="hover-btn-pop px-3.5 py-1.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors flex items-center gap-1"
                   >
                     <Edit2 className="w-3 h-3" />
                     <span>Edit</span>
@@ -1142,7 +1142,7 @@ export const AdminBlogs: React.FC = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-6 py-2.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-50 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5"
+                    className="hover-btn-pop px-6 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] disabled:opacity-50 rounded-full shadow-xs transition-colors flex items-center gap-1.5"
                   >
                     {saving ? (
                       <>

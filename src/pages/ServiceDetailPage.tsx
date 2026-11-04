@@ -107,8 +107,9 @@ export const ServiceDetailPage: React.FC = () => {
                   {service.treatments.map((item, idx) => (
                     <div
                       key={idx}
-                      className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700"
+                      className="group relative overflow-hidden p-3 rounded-lg bg-slate-50 border border-slate-200 hover:border-[#4380FF]/40 text-xs font-medium text-slate-700 hover:bg-white transition-all"
                     >
+                      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       {item}
                     </div>
                   ))}
@@ -151,7 +152,7 @@ export const ServiceDetailPage: React.FC = () => {
                 </p>
                 <Link
                   to={`/providers/${doctor.slug}`}
-                  className="w-full text-center block py-2 px-3 text-xs font-bold text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                  className="hover-btn-pop w-full text-center block py-2.5 px-4 text-xs font-medium text-[#4380FF] bg-white border border-[#4380FF] hover:bg-blue-50/50 rounded-full transition-colors"
                 >
                   View Doctor Profile &rarr;
                 </Link>
@@ -173,16 +174,16 @@ export const ServiceDetailPage: React.FC = () => {
               <div className="pt-1 flex flex-col gap-2.5">
                 <a
                   href={`tel:${(doctor?.phone || settings?.phone || '973-412-9404').replace(/[^0-9]/g, '')}`}
-                  className="w-full py-3 text-center text-xs font-bold text-blue-950 bg-white hover:bg-slate-100 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+                  className="hover-btn-pop w-full py-3 text-center text-sm font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full transition-all shadow-xs flex items-center justify-center gap-2"
                 >
-                  <Phone className="w-4 h-4 text-blue-900" />
+                  <Phone className="w-4 h-4 text-white" />
                   <span>Call to Book: {doctor?.phone || settings?.phone || '(973) 412-9404'}</span>
                 </a>
 
                 {doctor?.email && (
                   <a
                     href={`mailto:${doctor.email}`}
-                    className="w-full py-2.5 text-center text-xs font-medium text-slate-200 hover:text-white bg-blue-800/60 hover:bg-blue-800 border border-blue-700/80 rounded-xl transition-colors flex items-center justify-center gap-2 truncate px-3"
+                    className="hover-btn-pop w-full py-2.5 text-center text-xs font-medium text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-full transition-colors flex items-center justify-center gap-2 truncate px-4"
                   >
                     <Mail className="w-3.5 h-3.5 text-sky-300 shrink-0" />
                     <span className="truncate">{doctor.email}</span>

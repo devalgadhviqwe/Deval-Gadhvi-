@@ -133,6 +133,8 @@ export const TeamSection: React.FC = () => {
             >
               {/* Doctor Image Container: Light blue-gray bg #F4F9FC, rounded-3xl ~28px, overflow-hidden */}
               <div className="relative w-full aspect-[4/4.75] bg-[#F4F9FC] rounded-[28px] overflow-hidden flex items-center justify-center shadow-xs">
+                {/* Accent hover indicator line */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" />
                 {member.isPlaceholder ? (
                   /* Gray silhouette placeholder */
                   <div className="w-full h-full flex items-center justify-center bg-[#F4F9FC] relative">

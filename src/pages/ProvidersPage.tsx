@@ -31,8 +31,10 @@ export const ProvidersPage: React.FC = () => {
               delay={index * 0.1}
               initialScale={0.9}
               yOffset={30}
-              className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col sm:flex-row group"
+              className="group bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-[#4380FF]/40 shadow-2xs hover:shadow-md hover-card-lift transition-all flex flex-col sm:flex-row relative"
             >
+              {/* Accent hover indicator line */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" />
               {/* Doctor Photo Column */}
               <div className="sm:w-5/12 bg-slate-100 relative overflow-hidden aspect-4/5 sm:aspect-auto">
                 <img
@@ -90,7 +92,7 @@ export const ProvidersPage: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <a
                       href={`tel:${doctor.phone.replace(/[^0-9]/g, '')}`}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-lg shadow-2xs transition-colors"
+                      className="hover-btn-pop flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call to Book</span>
@@ -98,7 +100,7 @@ export const ProvidersPage: React.FC = () => {
 
                     <Link
                       to={`/providers/${doctor.slug}`}
-                      className="inline-flex items-center justify-center gap-1 py-2 px-3 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                      className="hover-btn-pop inline-flex items-center justify-center gap-1 py-2.5 px-4 text-xs font-medium text-[#4380FF] bg-white border border-[#4380FF] hover:bg-blue-50/50 rounded-full transition-colors"
                     >
                       <span>Profile</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -121,14 +123,14 @@ export const ProvidersPage: React.FC = () => {
           <div className="flex flex-wrap gap-3 shrink-0">
             <a
               href="tel:9734129404"
-              className="px-4 py-2.5 text-xs font-bold text-blue-950 bg-white hover:bg-slate-100 rounded-lg transition-colors inline-flex items-center gap-1.5"
+              className="hover-btn-pop px-5 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full transition-colors shadow-xs inline-flex items-center gap-1.5"
             >
               <Phone className="w-3.5 h-3.5" />
               <span>Dr. Gadhavi: (973) 412-9404</span>
             </a>
             <a
               href="tel:9733705259"
-              className="px-4 py-2.5 text-xs font-bold text-white bg-blue-800 hover:bg-blue-700 border border-blue-700 rounded-lg transition-colors inline-flex items-center gap-1.5"
+              className="hover-btn-pop px-5 py-2.5 text-xs font-medium text-white bg-white/10 hover:bg-white/20 border border-white/30 rounded-full transition-colors inline-flex items-center gap-1.5"
             >
               <Phone className="w-3.5 h-3.5" />
               <span>Dr. Pathak: (973) 370-5259</span>

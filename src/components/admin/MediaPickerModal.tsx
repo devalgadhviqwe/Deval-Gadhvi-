@@ -103,7 +103,7 @@ export const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
             />
           </div>
 
-          <label className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg cursor-pointer transition-colors shadow-2xs shrink-0">
+          <label className="hover-btn-pop inline-flex items-center justify-center gap-2 px-5 py-2 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full cursor-pointer transition-colors shadow-xs shrink-0">
             <Upload className="w-3.5 h-3.5" />
             <span>{uploading ? 'Uploading...' : 'Upload New Image'}</span>
             <input
@@ -186,7 +186,7 @@ export const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
                 }
               }}
               disabled={!selectedUrl}
-              className="px-5 py-2 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-50 rounded-lg shadow-2xs transition-colors"
+              className="hover-btn-pop px-6 py-2 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] disabled:opacity-50 rounded-full shadow-xs transition-colors"
             >
               Confirm Selection
             </button>

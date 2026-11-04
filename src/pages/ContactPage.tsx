@@ -153,7 +153,9 @@ export const ContactPage: React.FC = () => {
               {/* Provider Cards Grid */}
               <div className="space-y-4">
                 {/* 1. Dr. Prahlad & Dr. Deval (Primary Care) */}
-                <div className="p-5 sm:p-6 rounded-2xl border border-blue-100 bg-blue-50/40 hover:bg-blue-50/70 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="group relative overflow-hidden p-5 sm:p-6 rounded-2xl border border-blue-100 hover:border-[#4380FF]/40 bg-blue-50/40 hover:bg-blue-50/70 hover-card-lift transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  {/* Accent hover indicator line */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="space-y-1">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-blue-900 bg-blue-100/80 px-2.5 py-0.5 rounded-full inline-block mb-1">
                       Primary Care &amp; Internal Medicine
@@ -172,7 +174,7 @@ export const ContactPage: React.FC = () => {
                   <div className="shrink-0 flex flex-col items-start sm:items-end gap-1.5">
                     <a
                       href="tel:9734129404"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-xl shadow-xs transition-colors"
+                      className="hover-btn-pop inline-flex items-center gap-2 px-6 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call to Book: (973) 412-9404</span>
@@ -184,7 +186,9 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 {/* 2. Dr. Sankalp Pathak (Cardiology) */}
-                <div className="p-5 sm:p-6 rounded-2xl border border-sky-100 bg-sky-50/40 hover:bg-sky-50/70 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="group relative overflow-hidden p-5 sm:p-6 rounded-2xl border border-sky-100 hover:border-[#4380FF]/40 bg-sky-50/40 hover:bg-sky-50/70 hover-card-lift transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  {/* Accent hover indicator line */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="space-y-1">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-sky-900 bg-sky-100/80 px-2.5 py-0.5 rounded-full inline-block mb-1">
                       Cardiology &amp; Heart Health
@@ -203,7 +207,7 @@ export const ContactPage: React.FC = () => {
                   <div className="shrink-0 flex flex-col items-start sm:items-end gap-1.5">
                     <a
                       href="tel:9733705259"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-xl shadow-xs transition-colors"
+                      className="hover-btn-pop inline-flex items-center gap-2 px-6 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call to Book: (973) 370-5259</span>
@@ -215,7 +219,9 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 {/* 3. Disha (Physiotherapy / Motion Rehab) */}
-                <div className="p-5 sm:p-6 rounded-2xl border border-teal-100 bg-teal-50/40 hover:bg-teal-50/70 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="group relative overflow-hidden p-5 sm:p-6 rounded-2xl border border-teal-100 hover:border-[#4380FF]/40 bg-teal-50/40 hover:bg-teal-50/70 hover-card-lift transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  {/* Accent hover indicator line */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="space-y-1">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-teal-900 bg-teal-100/80 px-2.5 py-0.5 rounded-full inline-block mb-1">
                       Physical Therapy &amp; Rehabilitation
@@ -234,7 +240,7 @@ export const ContactPage: React.FC = () => {
                   <div className="shrink-0 flex flex-col items-start sm:items-end gap-1.5">
                     <a
                       href="tel:8622854400"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-[#4380FF] hover:bg-[#3372f0] rounded-xl shadow-xs transition-colors"
+                      className="hover-btn-pop inline-flex items-center gap-2 px-6 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call to Book: (862) 285-4400</span>

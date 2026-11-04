@@ -180,7 +180,7 @@ export const AdminSettings: React.FC = () => {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-60 rounded-lg shadow-2xs transition-colors shrink-0"
+            className="hover-btn-pop inline-flex items-center gap-2 px-6 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] disabled:opacity-60 rounded-full shadow-xs transition-colors shrink-0"
           >
             {success ? <CheckCircle2 className="w-4 h-4 text-emerald-300" /> : <Save className="w-4 h-4" />}
             <span>{saving ? 'Saving...' : success ? 'Settings Saved!' : 'Save Settings'}</span>
@@ -285,7 +285,7 @@ export const AdminSettings: React.FC = () => {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploadingLogo}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+                    className="hover-btn-pop inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors cursor-pointer disabled:opacity-50"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>{uploadingLogo ? 'Uploading...' : 'Upload Logo'}</span>

@@ -156,7 +156,7 @@ export const AdminLoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 text-sm font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:opacity-60 rounded-lg shadow-xs hover:shadow-sm transition-colors cursor-pointer"
+              className="hover-btn-pop w-full flex justify-center items-center gap-2 py-3 px-4 text-sm font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] disabled:opacity-60 rounded-full shadow-xs hover:shadow-sm transition-colors cursor-pointer"
             >
               <Shield className="w-4 h-4" />
               <span>{loading ? 'Authenticating...' : 'Sign In to Portal'}</span>
@@ -172,21 +172,21 @@ export const AdminLoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setCredentials('admin')}
-                className="py-1.5 px-2 text-[11px] font-semibold text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors text-center"
+                className="py-1.5 px-3 text-[11px] font-semibold text-[#4380FF] bg-blue-50 hover:bg-blue-100 rounded-full border border-blue-200 transition-colors text-center"
               >
                 Super Admin
               </button>
               <button
                 type="button"
                 onClick={() => setCredentials('editor')}
-                className="py-1.5 px-2 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-blue-50 hover:text-blue-900 rounded-lg border border-slate-200 transition-colors text-center"
+                className="py-1.5 px-3 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-blue-50 hover:text-[#4380FF] rounded-full border border-slate-200 transition-colors text-center"
               >
                 Editor
               </button>
               <button
                 type="button"
                 onClick={() => setCredentials('viewer')}
-                className="py-1.5 px-2 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-blue-50 hover:text-blue-900 rounded-lg border border-slate-200 transition-colors text-center"
+                className="py-1.5 px-3 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-blue-50 hover:text-[#4380FF] rounded-full border border-slate-200 transition-colors text-center"
               >
                 Viewer
               </button>

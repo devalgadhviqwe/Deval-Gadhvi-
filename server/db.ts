@@ -26,12 +26,12 @@ const INITIAL_SETTINGS: GlobalSettings = {
 };
 
 const INITIAL_THEME: ThemeSettings = {
-  primaryColor: '#1e3a8a',
-  secondaryColor: '#0284c7',
-  accentColor: '#0d9488',
+  primaryColor: '#4380FF',
+  secondaryColor: '#3270ee',
+  accentColor: '#4380FF',
   backgroundColor: '#f8fafc',
   fontFamily: 'Plus Jakarta Sans',
-  borderRadius: '0.5rem'
+  borderRadius: '9999px'
 };
 
 const INITIAL_DOCTORS: Doctor[] = [

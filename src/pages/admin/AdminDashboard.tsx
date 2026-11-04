@@ -117,21 +117,21 @@ export const AdminDashboard: React.FC = () => {
         <div className="flex items-center gap-3">
           <Link
             to="/admin/blogs"
-            className="px-4 py-2.5 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5"
+            className="hover-btn-pop px-5 py-2.5 text-xs font-medium text-white bg-[#4380FF] hover:bg-[#3270ee] rounded-full shadow-xs transition-colors flex items-center gap-1.5"
           >
             <BookOpen className="w-3.5 h-3.5" />
             <span>Manage Blogs</span>
           </Link>
           <Link
             to="/admin/images"
-            className="px-4 py-2.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5"
+            className="hover-btn-pop px-5 py-2.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-full shadow-2xs transition-colors flex items-center gap-1.5"
           >
             <ImageIcon className="w-3.5 h-3.5" />
             <span>Manage Images</span>
           </Link>
           <Link
             to="/admin/homepage"
-            className="px-4 py-2.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5"
+            className="hover-btn-pop px-5 py-2.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-full shadow-2xs transition-colors flex items-center gap-1.5"
           >
             <span>Edit Content</span>
             <ArrowRight className="w-3.5 h-3.5" />

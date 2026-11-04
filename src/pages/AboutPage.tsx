@@ -76,8 +76,10 @@ export const AboutPage: React.FC = () => {
                 delay={idx * 0.08}
                 initialScale={0.92}
                 yOffset={25}
-                className="bg-white p-6 rounded-[20px] border border-slate-200/80 flex flex-col justify-between"
+                className="group bg-white p-6 rounded-[20px] border border-slate-200/80 hover:border-[#4380FF]/40 hover-card-lift shadow-2xs flex flex-col justify-between relative overflow-hidden transition-all"
               >
+                {/* Accent hover indicator line */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4380FF] to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div>
                   <div className="w-7 h-7 rounded-full bg-[#4380FF] flex items-center justify-center text-white mb-4">
                     <Check className="w-4 h-4 stroke-[2.8]" />
