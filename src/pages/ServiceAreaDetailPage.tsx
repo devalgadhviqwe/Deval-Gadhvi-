@@ -364,3 +364,4 @@ export const ServiceAreaDetailPage: React.FC = () => {
     </div>
   );
 };
+

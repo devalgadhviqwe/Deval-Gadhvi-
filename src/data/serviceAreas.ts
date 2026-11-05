@@ -185,3 +185,4 @@ export const SERVICE_AREAS: ServiceArea[] = [
     transitDirections: 'Direct ride on NJ Transit Bus #11 or #29 southbound along Bloomfield Avenue.'
   }
 ];
+

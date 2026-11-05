@@ -50,5 +50,33 @@ export function createExpressApp() {
     res.json({ status: 'ok', time: new Date().toISOString() });
   });
 
+  // Explicit handlers for sitemap.xml and robots.txt so they are NEVER rewritten to index.html
+  const distDir = path.resolve(process.cwd(), 'dist');
+  const publicDir = path.resolve(process.cwd(), 'public');
+
+  app.get('/sitemap.xml', (_req, res) => {
+    const sitemapDist = path.join(distDir, 'sitemap.xml');
+    const sitemapPublic = path.join(publicDir, 'sitemap.xml');
+    const targetFile = fs.existsSync(sitemapDist) ? sitemapDist : sitemapPublic;
+    if (fs.existsSync(targetFile)) {
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      return res.sendFile(targetFile);
+    }
+    return res.status(404).send('sitemap.xml not found');
+  });
+
+  app.get('/robots.txt', (_req, res) => {
+    const robotsDist = path.join(distDir, 'robots.txt');
+    const robotsPublic = path.join(publicDir, 'robots.txt');
+    const targetFile = fs.existsSync(robotsDist) ? robotsDist : robotsPublic;
+    if (fs.existsSync(targetFile)) {
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      return res.sendFile(targetFile);
+    }
+    return res.status(404).send('robots.txt not found');
+  });
+
   return app;
 }

@@ -8,3 +8,4 @@ Disallow: /api/
 
 # Sitemap location for Google Search Console
 Sitemap: https://newarkmedicalassociates.com/sitemap.xml
+

@@ -22,7 +22,16 @@ async function startServer() {
     const distPath = path.resolve(process.cwd(), 'dist');
     app.use((await import('express')).default.static(distPath));
 
-    app.get('*', (_req, res) => {
+    app.get('*', (req, res) => {
+      // Prevent SPA rewrite for sitemap and robots
+      if (req.path === '/sitemap.xml') {
+        res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+        return res.sendFile(path.join(distPath, 'sitemap.xml'));
+      }
+      if (req.path === '/robots.txt') {
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        return res.sendFile(path.join(distPath, 'robots.txt'));
+      }
       res.sendFile(path.join(distPath, 'index.html'));
     });
     console.log('[Production Server] Serving production dist');
