@@ -15,6 +15,8 @@ import { ProviderDetailPage } from './pages/ProviderDetailPage';
 import { ContactPage } from './pages/ContactPage';
 import { BlogPage } from './pages/BlogPage';
 import { BlogDetailPage } from './pages/BlogDetailPage';
+import { ServiceAreasIndexPage } from './pages/ServiceAreasIndexPage';
+import { ServiceAreaDetailPage } from './pages/ServiceAreaDetailPage';
 
 // Admin Pages
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
@@ -148,6 +150,22 @@ export function App() {
               element={
                 <PublicLayout>
                   <BlogDetailPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/service-areas"
+              element={
+                <PublicLayout>
+                  <ServiceAreasIndexPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/service-areas/:slug"
+              element={
+                <PublicLayout>
+                  <ServiceAreaDetailPage />
                 </PublicLayout>
               }
             />

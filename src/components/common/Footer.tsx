@@ -87,7 +87,12 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="hover:text-white transition-colors text-sky-400">
+                <Link to="/service-areas" className="hover:text-white transition-colors text-sky-400">
+                  Areas &amp; Communities We Serve
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="hover:text-white transition-colors">
                   Health &amp; Medical Blog
                 </Link>
               </li>
@@ -169,6 +174,30 @@ export const Footer: React.FC = () => {
                 </div>
               </li>
             </ul>
+          </div>
+        </div>
+
+        {/* Regional Coverage Links for SEO */}
+        <div className="py-6 border-b border-slate-850 text-xs text-slate-400">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold text-white mr-1">Areas Served:</span>
+            <Link to="/service-areas/belleville-nj" className="hover:text-white transition-colors">Belleville</Link>
+            <span>·</span>
+            <Link to="/service-areas/bloomfield-nj" className="hover:text-white transition-colors">Bloomfield</Link>
+            <span>·</span>
+            <Link to="/service-areas/east-orange-nj" className="hover:text-white transition-colors">East Orange</Link>
+            <span>·</span>
+            <Link to="/service-areas/kearny-nj" className="hover:text-white transition-colors">Kearny</Link>
+            <span>·</span>
+            <Link to="/service-areas/harrison-nj" className="hover:text-white transition-colors">Harrison</Link>
+            <span>·</span>
+            <Link to="/service-areas/ironbound-newark-nj" className="hover:text-white transition-colors">Ironbound District</Link>
+            <span>·</span>
+            <Link to="/service-areas/irvington-nj" className="hover:text-white transition-colors">Irvington</Link>
+            <span>·</span>
+            <Link to="/service-areas/montclair-nj" className="hover:text-white transition-colors">Montclair</Link>
+            <span>·</span>
+            <Link to="/service-areas" className="text-sky-400 hover:underline font-medium">All Service Areas &rarr;</Link>
           </div>
         </div>
 

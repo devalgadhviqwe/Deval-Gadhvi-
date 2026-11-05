@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Disallow private admin portal
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap location for Google Search Console
+Sitemap: https://newarkmedicalassociates.com/sitemap.xml
